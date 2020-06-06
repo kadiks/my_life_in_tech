@@ -1,5 +1,9 @@
 # Quick start user guide for the API
 
+To run the dev version, open two terms:
+- One to create the bundle: `npm run webpack`
+- The second to run it: `npm start`
+
 ## The routes are as follows
 
 ```
