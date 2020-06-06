@@ -1,0 +1,30 @@
+{
+  "name": "feathertest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@feathersjs/express": "^4.5.4",
+    "@feathersjs/feathers": "^4.5.3",
+    "@feathersjs/socketio": "^4.5.4",
+    "@types/cors": "^2.8.6",
+    "@types/nedb": "^1.8.9",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "feathers-nedb": "^5.1.0",
+    "helmet": "^3.22.0",
+    "nedb": "^1.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  }
+}

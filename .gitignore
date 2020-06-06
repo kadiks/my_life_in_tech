@@ -1,7 +1,6 @@
 */docs/*
 */.env
 */node_modules/*
-*/dist/*
 */db/*
 
 */.next/*
