@@ -1,8 +1,16 @@
-const Post = ({ post }) => {
+import { getContentWithWhitelist } from '../utils/text';
+
+const Post = ({ post = {}, whitelist } = {}) => {
   const { content, handle } = post;
   return (
     <>
-      <p className="post">{content}</p>
+      <p
+        className="post"
+        dangerouslySetInnerHTML={getContentWithWhitelist({
+          content,
+          whitelist,
+        })}
+      />
       <p className="author">{handle}</p>
     </>
   );
@@ -14,9 +22,10 @@ const Content = ({ content }) => {
 
 export default ({
   isBackground = true,
-  isPost = true,
+  isStory = true,
   content = '',
-  post = {},
+  stories = [],
+  whitelist,
 }) => {
   const headerNum = getRandomInt(1, 4);
   let styles = {};
@@ -26,12 +35,16 @@ export default ({
     };
   }
   return (
-    <header className={isPost === false ? 'add-xp' : ''} style={styles}>
+    <header className={isStory === false ? 'add-xp' : ''} style={styles}>
       <div className="header-filter"></div>
       <div className="container">
         <div className="row">
-          <div className="col-12">
-            {isPost ? <Post post={post} /> : <Content content={content} />}
+          <div className="col-8 offset-2 content">
+            {isStory ? (
+              <Post post={stories[0]} whitelist={whitelist} />
+            ) : (
+              <Content content={content} />
+            )}
           </div>
         </div>
       </div>

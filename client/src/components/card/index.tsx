@@ -2,12 +2,12 @@ import Header from './Header';
 import Body from './Body';
 import Footer from './Footer';
 
-export default () => {
+export default (story) => {
   return (
     <div className="card">
-      <Header />
-      <Body />
-      <Footer />
+      <Header {...story} />
+      <Body {...story} />
+      <Footer {...story} />
     </div>
   );
 };

@@ -24,7 +24,7 @@ class MyDocument extends Document {
   render() {
     const { isProduction } = this.props;
     return (
-      <Html>
+      <Html lang="fr">
         <Head>
           <meta charSet="utf8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />

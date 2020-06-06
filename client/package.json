@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "diacritics": "^1.3.0",
     "dotenv": "^8.2.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
@@ -18,6 +19,7 @@
   },
   "scripts": {
     "dev": "next",
+    "server-build": "npm run build && npm run export && rm -rf ../server/dist/public/* && cp -a out/ ../server/dist/public",
     "build": "next build",
     "export": "next export",
     "start": "node app",

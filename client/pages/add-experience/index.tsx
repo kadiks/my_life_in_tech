@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 import Config from '../../src/Config';
 
@@ -10,20 +11,39 @@ import Footer from '../../src/components/Footer';
 
 import { postStory } from '../../src/utils/Api';
 
+const ErrorAlert = ({ text = '' }) => {
+  console.log('ErrorAlert text', text);
+  return (
+    <div className="row">
+      <div className="col-12">
+        <div className="alert-error">{text.toString()}</div>
+      </div>
+    </div>
+  );
+};
+
 export default () => {
+  const router = useRouter();
+  const [error, setError] = useState('');
   const [handle, setHandle] = useState('');
   const [isPositiveExperience, setIsPositiveExperience] = useState(null);
   const [content, setContent] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('handle', handle);
-    console.log('isPositiveExperience', isPositiveExperience);
-    console.log('content', content);
+    // console.log('handle', handle);
+    // console.log('isPositiveExperience', isPositiveExperience);
+    // console.log('content', content);
     if (isPositiveExperience === null) {
+      setError(
+        "Il est obligatoire de mettre si l'expérience était positive ou négative"
+      );
       return;
     }
-    if (content.length === 0) {
+    if (content.length <= 100) {
+      setError(
+        "Il est obligatoire de mettre d'écrire une expérience de plus de 100 caractères"
+      );
       return;
     }
 
@@ -32,7 +52,18 @@ export default () => {
       isPositiveExperience,
       content,
     });
-    console.log('json', json);
+
+    if (json.hasOwnProperty('_id') === true) {
+      router.push('/');
+    } else {
+      if (json.hasOwnProperty('error') === true) {
+        console.log('json.error', json.error);
+        setError(json.error);
+      } else {
+        setError('Une erreur est survenue. Veuillez essayer plus tard');
+      }
+    }
+    // console.log('json', json);
   };
   return (
     <>
@@ -42,16 +73,19 @@ export default () => {
       <Navigation />
       <Header
         isBackground={false}
-        isPost={false}
+        isStory={false}
         content={'Ajouter mon expérience'}
       />
       <main>
         <div className="container">
+          {error !== '' && <ErrorAlert text={error} />}
           <div className="row">
             <div className="col-12 col-md-6 col-lg-4 offset-md-3 offset-lg-4">
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="experience">Experience type</label>
+                  <label htmlFor="experience">
+                    Comment était votre expérience ?
+                  </label>
                   <div className="checkbox">
                     <input
                       type="radio"
@@ -99,7 +133,9 @@ export default () => {
                   </small> */}
                 </div>
                 <div className="form-group">
-                  <label htmlFor="handle">Name (optional)</label>
+                  <label htmlFor="handle">
+                    Votre pseudonyme (facultatif) :
+                  </label>
                   <input
                     type="text"
                     id="handle"
@@ -111,11 +147,12 @@ export default () => {
                   />
                 </div>
                 <div className="button">
-                  <button type="submit">Send</button>
+                  <button type="submit">Envoyer</button>
                 </div>
               </form>
             </div>
           </div>
+          {error !== '' && <ErrorAlert text={error} />}
         </div>
       </main>
       <Footer />

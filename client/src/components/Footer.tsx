@@ -10,13 +10,13 @@ export default () => {
               Made with &nbsp;<i className="fas fa-heart"></i>&nbsp; by
               <span className="author">
                 <a href="#">Gregory Houldsworth</a>
-                <span className="job">(developer backend)</span>
+                <span className="job">(Développeur backend)</span>
               </span>
               &amp;
               <span className="author">
                 <a href="#">Jénaïc Cambré</a>
                 <span className="job">
-                  (développeur frontend &amp; chef de projet)
+                  (Développeur frontend &amp; chef de projet)
                 </span>
               </span>
               <span className="author">

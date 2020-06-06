@@ -1,3 +1,11 @@
+interface Settings {
+  API_URL: string;
+  API_ENDPOINT: string;
+  API_EXTENSION: string;
+  GA_TRACKING_ID: string;
+  VERSION: string;
+}
+
 const dev = {
   API_URL: 'http://localhost:3000',
   API_ENDPOINT: '/api',
@@ -25,7 +33,9 @@ const prod = {
 
 const env = process.env.NEXT_ENV;
 
-let Config = {};
+declare var Config: Settings;
+
+Config = {};
 
 if (env === 'dev' || env === 'test' || env === 'prod') {
   Config = Object.assign(Config, dev);
