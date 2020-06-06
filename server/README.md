@@ -52,6 +52,6 @@
 }
 ```
 
-### /story/:id return a unique story
+### /story/:id returns a unique story
 
-### /stories/highlighted return 3 stories
+### /stories/highlighted returns 3 stories
