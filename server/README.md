@@ -1,5 +1,7 @@
 # Quick start user guide for the API
 
+Add .env with PORT number
+
 To run the dev version, open two terms:
 - One to create the bundle: `npm run webpack`
 - The second to run it: `npm start`
@@ -19,7 +21,7 @@ To run the dev version, open two terms:
 ```
 {
   success: true | false,
-  dat: object
+  data: object
 }
 ```
 
