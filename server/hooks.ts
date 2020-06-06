@@ -22,20 +22,47 @@ const randomStory = async(context: HookContext) => {
   return context
 }
 
+const error = async(context: HookContext) => {
+  console.log(context.error)
+  return context
+}
+
+const filterByStory = async(context: HookContext) => {
+  return context
+}
+
+
+const addReactions = async(context: HookContext) => {
+  console.log('adding reactions')
+  return context
+}
+
 
 const highlightHook = {
   after: {
     find: [randomStory],
   },
+  error: {
+    all: [error],
+  }
 }
 
 const storyHook = {
   before: {
     create: [ createdAt, filterHandle ],
+    get: [ addReactions ]
   },
+}
+
+const reactionsHook = {
+  before: {
+    create: [ createdAt ],
+    find: [ filterByStory ]
+  }
 }
 
 export default {
   story: storyHook,
-  highlighted: highlightHook
+  highlighted: highlightHook,
+  reactions: reactionsHook,
 }
