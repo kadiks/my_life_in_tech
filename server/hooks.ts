@@ -7,15 +7,16 @@ const createdAt = async(context: HookContext) => {
 
 const filterHandle = async(context: HookContext) => {
   if(!context.data.handle){
-    context.data.handle = 'Anonyme'
+    context.data.handle = ''
   }
   return context
 }
 
+
 const storyHook = {
   before: {
-    create: [ createdAt ]
-  }
+    create: [ createdAt, filterHandle ],
+  },
 }
 
 export default {

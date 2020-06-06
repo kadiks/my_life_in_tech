@@ -6,9 +6,9 @@
 ## The routes are as follows
 
 ```
-/stories
-/story/:id
-/stories/highlighted
+[GET | POST] /stories
+[GET | DELETE] /stories/:id
+[GET] /stories/highlighted
 ```
 
 ## Return types

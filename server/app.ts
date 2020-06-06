@@ -7,6 +7,9 @@ import NeDB from 'nedb'
 import createService from 'feathers-nedb'
 
 import hooks from './hooks'
+import services from './services'
+
+import cors from 'cors'
 
 // General Setup
 
@@ -19,30 +22,29 @@ if(!process.env.PORT){
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
 
-const dbStories = new NeDB({
-  filename: './db/stories',
-  autoload: true,
-})
-
-const serviceStories = createService({
-  Model: dbStories,
-  id: 'id',
-})
-
 const app = express(feathers());
 
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors)
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // REST API
 app.configure(express.rest());
 
 // Services registration
-app.use('/stories', serviceStories)
-const service = app.service('stories')
-service.hooks(hooks.story)
-//service.hooks({before: { create: [ doNothing ] } })
+app.use('/stories/', services.stories)
+app.service('stories').hooks(hooks.story)
+
+
+app.use('/highlighted/', services.highlighted)
+app.service('highlighted').find({
+  query: {
+    limit: 1
+  }
+})
+
+console.log(app.service('highlighted').find)
+
 
 // Express midlleware / Neat error handler
 app.use(express.errorHandler());
