@@ -18,7 +18,7 @@ const pick = (xs: Array<Object>) => {
 }
 
 const randomStory = async(context: HookContext) => {
-  context.result = pick(context.result)
+  context.result = [...new Array(3)].map(() => pick(context.result))
   return context
 }
 
