@@ -32,8 +32,10 @@ app.use(express.urlencoded({ extended: true }))
 app.configure(express.rest());
 
 // Services registration
+app.use('/stories/highlighted', services.highlighted)
 app.use('/stories', services.stories)
-//app.service('stories').hooks(hooks.story)
+app.service('stories').hooks(hooks.story)
+app.service('stories/highlighted').hooks(hooks.highlighted)
 
 // Express midlleware / Neat error handler
 app.use(express.errorHandler());
