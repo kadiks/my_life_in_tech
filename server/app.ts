@@ -24,7 +24,7 @@ const PORT: number = parseInt(process.env.PORT as string, 10);
 
 const app = express(feathers());
 
-app.use(cors)
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -32,19 +32,8 @@ app.use(express.urlencoded({ extended: true }))
 app.configure(express.rest());
 
 // Services registration
-app.use('/stories/', services.stories)
-app.service('stories').hooks(hooks.story)
-
-
-app.use('/highlighted/', services.highlighted)
-app.service('highlighted').find({
-  query: {
-    limit: 1
-  }
-})
-
-console.log(app.service('highlighted').find)
-
+app.use('/stories', services.stories)
+//app.service('stories').hooks(hooks.story)
 
 // Express midlleware / Neat error handler
 app.use(express.errorHandler());
