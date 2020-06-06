@@ -12,6 +12,23 @@ const filterHandle = async(context: HookContext) => {
   return context
 }
 
+const log = async(context: HookContext) => {
+  //console.log(context)
+  return context
+}
+
+const pouet = async(context: HookContext) => {
+  console.log(Object.keys(context))
+  return context
+}
+
+
+const highlightHook = {
+  before: {
+    all: [log],
+    find: [pouet],
+  },
+}
 
 const storyHook = {
   before: {
@@ -20,5 +37,6 @@ const storyHook = {
 }
 
 export default {
-  story: storyHook
+  story: storyHook,
+  highlighted: highlightHook
 }
