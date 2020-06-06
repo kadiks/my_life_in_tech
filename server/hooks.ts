@@ -1,5 +1,7 @@
 import { HookContext } from '@feathersjs/feathers'
 
+import * as whitelist from './whitelist.json'
+
 const createdAt = async(context: HookContext) => {
   context.data.date = Date.now()
   return context
@@ -31,10 +33,35 @@ const filterByStory = async(context: HookContext) => {
   return context
 }
 
+const addWhitelists = async(context: HookContext) => {
+  console.log('adding whitelists')
+  const words = whitelist.words
+  const tempResult = context.result
+  for(const story of tempResult){
+    const storyWords = story.text.split(' ')
+    const found = words.filter(w => storyWords.includes(w))
+    console.log(storyWords)
+    story.whitelist = found
+  }
+  return context
+}
 
 const addReactions = async(context: HookContext) => {
-  console.log('adding reactions')
+  //console.log('adding reactions')
+  //const app = context.app
+  //const findReactions = app.services['stories/:storieId/reactions'].find
   return context
+}
+
+
+
+const storyHook = {
+  before: {
+    create: [ createdAt, filterHandle ],
+  },
+  after:{
+    find: [ addWhitelists, addReactions ],
+  }
 }
 
 
@@ -47,12 +74,6 @@ const highlightHook = {
   }
 }
 
-const storyHook = {
-  before: {
-    create: [ createdAt, filterHandle ],
-    get: [ addReactions ]
-  },
-}
 
 const reactionsHook = {
   before: {
