@@ -5,3 +5,5 @@ curl -d text="C" -d handle="c" -d isPositiveExperience="false" http://localhost:
 curl http://localhost:7000/stories
 
 curl --request DELETE http://localhost:7000/stories/8JYg2A8EQIhG9Upu
+
+curl -d emotion="hug"  http://localhost:7000/stories/AHXvZoCZWYPJeyMA/reactions
