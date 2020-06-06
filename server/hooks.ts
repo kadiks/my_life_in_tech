@@ -12,21 +12,20 @@ const filterHandle = async(context: HookContext) => {
   return context
 }
 
-const log = async(context: HookContext) => {
-  //console.log(context)
-  return context
+const pick = (xs: Array<Object>) => {
+  const index = Math.floor(Math.random() * xs.length)
+  return xs[index]
 }
 
-const pouet = async(context: HookContext) => {
-  console.log(Object.keys(context))
+const randomStory = async(context: HookContext) => {
+  context.result = pick(context.result)
   return context
 }
 
 
 const highlightHook = {
-  before: {
-    all: [log],
-    find: [pouet],
+  after: {
+    find: [randomStory],
   },
 }
 
