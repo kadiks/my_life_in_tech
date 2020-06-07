@@ -22,7 +22,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "d84cec40c1197383a29f";
+/******/ 	var hotCurrentHash = "8ddad4ff9ec75a1e118a";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -818,6 +818,30 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./app.ts":
+/*!****************!*\
+  !*** ./app.ts ***!
+  \****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {\n    Object.defineProperty(o, \"default\", { enumerable: true, value: v });\n}) : function(o, v) {\n    o[\"default\"] = v;\n});\nvar __importStar = (this && this.__importStar) || function (mod) {\n    if (mod && mod.__esModule) return mod;\n    var result = {};\n    if (mod != null) for (var k in mod) if (k !== \"default\" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);\n    __setModuleDefault(result, mod);\n    return result;\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst dotenv = __importStar(__webpack_require__(/*! dotenv */ \"dotenv\"));\nconst feathers_1 = __importDefault(__webpack_require__(/*! @feathersjs/feathers */ \"@feathersjs/feathers\"));\n__webpack_require__(/*! @feathersjs/transport-commons */ \"@feathersjs/transport-commons\");\nconst express_1 = __importDefault(__webpack_require__(/*! @feathersjs/express */ \"@feathersjs/express\"));\nconst hooks_1 = __importDefault(__webpack_require__(/*! ./hooks */ \"./hooks.ts\"));\nconst services_1 = __importDefault(__webpack_require__(/*! ./services */ \"./services.ts\"));\nconst cors_1 = __importDefault(__webpack_require__(/*! cors */ \"cors\"));\n// General Setup\ndotenv.config();\nif (!process.env.PORT) {\n    console.error('No port found in .env');\n    process.exit(1);\n}\nconst PORT = parseInt(process.env.PORT, 10);\nconst app = express_1.default(feathers_1.default());\napp.use(cors_1.default());\napp.use(express_1.default.json());\napp.use(express_1.default.urlencoded({ extended: true }));\n// STATIC FOLDER\napp.use('/', express_1.default.static('public'));\n// REST API\napp.configure(express_1.default.rest());\n// Services registration\n//   Stories\napp.use('/stories/highlighted', services_1.default.highlighted);\napp.use('/stories', services_1.default.stories);\napp.service('stories').hooks(hooks_1.default.story);\napp.service('stories/highlighted').hooks(hooks_1.default.highlighted);\n// Whitelist\napp.use('/whitelist', services_1.default.whitelist);\n//  Reaction\napp.use('/stories/:storieId/reactions', services_1.default.reactions);\napp.service('stories/:storieId/reactions').hooks(hooks_1.default.reactions);\n// Express midlleware / Neat error handler\napp.use(express_1.default.errorHandler());\n// Start the server\nconst server = app\n    .listen(PORT)\n    .on('listening', () => console.log(`Feathers server listening on localhost:${PORT}`));\nif (true) {\n    module.hot.accept();\n    module.hot.dispose(() => server.close());\n}\n\n\n//# sourceURL=webpack:///./app.ts?");
+
+/***/ }),
+
+/***/ "./hooks.ts":
+/*!******************!*\
+  !*** ./hooks.ts ***!
+  \******************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {\n    Object.defineProperty(o, \"default\", { enumerable: true, value: v });\n}) : function(o, v) {\n    o[\"default\"] = v;\n});\nvar __importStar = (this && this.__importStar) || function (mod) {\n    if (mod && mod.__esModule) return mod;\n    var result = {};\n    if (mod != null) for (var k in mod) if (k !== \"default\" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);\n    __setModuleDefault(result, mod);\n    return result;\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst whitelist = __importStar(__webpack_require__(/*! ./whitelist.json */ \"./whitelist.json\"));\nconst createdAt = async (context) => {\n    context.data.date = Date.now();\n    return context;\n};\nconst filterHandle = async (context) => {\n    if (!context.data.handle) {\n        context.data.handle = '';\n    }\n    return context;\n};\nconst pick = (xs) => {\n    const index = Math.floor(Math.random() * xs.length);\n    return xs[index];\n};\nconst randomStory = async (context) => {\n    context.result = [...new Array(3)].map(() => pick(context.result));\n    return context;\n};\nconst error = async (context) => {\n    console.log(context.error);\n    return context;\n};\nconst filterByStory = async (context) => {\n    return context;\n};\nconst addWhitelists = async (context) => {\n    // console.log('adding whitelists');\n    const words = whitelist.words;\n    // console.log('adding whitelists #2');\n    const tempResult = context.result;\n    // console.log('adding whitelists #3');\n    for (const story of tempResult) {\n        // console.log('adding whitelists #3 story', story);\n        const storyWords = story.content.split(' ');\n        // console.log('adding whitelists #4');\n        const found = words.filter((w) => storyWords.includes(w));\n        // console.log('adding whitelists #5');\n        // console.log(storyWords);\n        story.whitelist = found;\n        // console.log('adding whitelists #6');\n    }\n    return context;\n};\nconst addReactions = async (context) => {\n    //console.log('adding reactions')\n    //const app = context.app\n    //const findReactions = app.services['stories/:storieId/reactions'].find\n    return context;\n};\nconst storyHook = {\n    before: {\n        create: [createdAt, filterHandle],\n    },\n    after: {\n        find: [addWhitelists, addReactions],\n    },\n};\nconst highlightHook = {\n    after: {\n        find: [randomStory],\n    },\n    error: {\n        all: [error],\n    },\n};\nconst reactionsHook = {\n    before: {\n        create: [createdAt],\n        find: [filterByStory],\n    },\n};\nexports.default = {\n    story: storyHook,\n    highlighted: highlightHook,\n    reactions: reactionsHook,\n};\n\n\n//# sourceURL=webpack:///./hooks.ts?");
+
+/***/ }),
+
 /***/ "./node_modules/webpack/hot/log-apply-result.js":
 /*!*****************************************!*\
   !*** (webpack)/hot/log-apply-result.js ***!
@@ -851,50 +875,70 @@ eval("/* WEBPACK VAR INJECTION */(function(__resourceQuery) {/*\n\tMIT License h
 
 /***/ }),
 
-/***/ "./src/index.ts":
-/*!**********************!*\
-  !*** ./src/index.ts ***!
-  \**********************/
+/***/ "./services.ts":
+/*!*********************!*\
+  !*** ./services.ts ***!
+  \*********************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {\n    Object.defineProperty(o, \"default\", { enumerable: true, value: v });\n}) : function(o, v) {\n    o[\"default\"] = v;\n});\nvar __importStar = (this && this.__importStar) || function (mod) {\n    if (mod && mod.__esModule) return mod;\n    var result = {};\n    if (mod != null) for (var k in mod) if (k !== \"default\" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);\n    __setModuleDefault(result, mod);\n    return result;\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\n// externals\nvar dotenv = __importStar(__webpack_require__(/*! dotenv */ \"dotenv\"));\nvar express_1 = __importDefault(__webpack_require__(/*! express */ \"express\"));\nvar cors_1 = __importDefault(__webpack_require__(/*! cors */ \"cors\"));\nvar helmet_1 = __importDefault(__webpack_require__(/*! helmet */ \"helmet\"));\n// home-made\nvar stories_router_ts_1 = __webpack_require__(/*! ./stories/stories.router.ts */ \"./src/stories/stories.router.ts\");\ndotenv.config();\n// Global vars\nif (!process.env.PORT) {\n    process.exit(1);\n}\nvar PORT = parseInt(process.env.PORT, 10);\nvar app = express_1.default();\n// Config\napp.use(helmet_1.default());\napp.use(cors_1.default());\napp.use(express_1.default.json());\napp.use('/stories', stories_router_ts_1.storiesRouter);\n// Start server\nvar server = app.listen(PORT, function () {\n    console.log(\"Listening on port \" + PORT);\n});\nif (true) {\n    module.hot.accept();\n    module.hot.dispose(function () { return server.close(); });\n}\n\n\n//# sourceURL=webpack:///./src/index.ts?");
+eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst feathers_nedb_1 = __importDefault(__webpack_require__(/*! feathers-nedb */ \"feathers-nedb\"));\nconst nedb_1 = __importDefault(__webpack_require__(/*! nedb */ \"nedb\"));\nconst storiesDB = new nedb_1.default({\n    filename: './db/stories',\n    autoload: true,\n});\nconst reactionsDB = new nedb_1.default({\n    filename: './db/reactions',\n    autoload: true,\n});\nconst whitelistDB = new nedb_1.default({\n    filename: './db/whitelist',\n    autoload: true,\n});\nconst storiesService = feathers_nedb_1.default({\n    Model: storiesDB,\n});\nconst highlightedService = feathers_nedb_1.default({\n    Model: storiesDB,\n});\nconst reactionService = feathers_nedb_1.default({\n    Model: reactionsDB,\n});\nconst whitelistService = feathers_nedb_1.default({\n    Model: whitelistDB,\n});\nexports.default = {\n    stories: storiesService,\n    highlighted: highlightedService,\n    reactions: reactionService,\n    whitelist: whitelistService,\n};\n\n\n//# sourceURL=webpack:///./services.ts?");
 
 /***/ }),
 
-/***/ "./src/stories/stories.router.ts":
-/*!***************************************!*\
-  !*** ./src/stories/stories.router.ts ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "./whitelist.json":
+/*!************************!*\
+  !*** ./whitelist.json ***!
+  \************************/
+/*! exports provided: words, default */
+/***/ (function(module) {
 
-"use strict";
-eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {\n    Object.defineProperty(o, \"default\", { enumerable: true, value: v });\n}) : function(o, v) {\n    o[\"default\"] = v;\n});\nvar __importStar = (this && this.__importStar) || function (mod) {\n    if (mod && mod.__esModule) return mod;\n    var result = {};\n    if (mod != null) for (var k in mod) if (k !== \"default\" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);\n    __setModuleDefault(result, mod);\n    return result;\n};\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __generator = (this && this.__generator) || function (thisArg, body) {\n    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;\n    return g = { next: verb(0), \"throw\": verb(1), \"return\": verb(2) }, typeof Symbol === \"function\" && (g[Symbol.iterator] = function() { return this; }), g;\n    function verb(n) { return function (v) { return step([n, v]); }; }\n    function step(op) {\n        if (f) throw new TypeError(\"Generator is already executing.\");\n        while (_) try {\n            if (f = 1, y && (t = op[0] & 2 ? y[\"return\"] : op[0] ? y[\"throw\"] || ((t = y[\"return\"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;\n            if (y = 0, t) op = [op[0] & 2, t.value];\n            switch (op[0]) {\n                case 0: case 1: t = op; break;\n                case 4: _.label++; return { value: op[1], done: false };\n                case 5: _.label++; y = op[1]; op = [0]; continue;\n                case 7: op = _.ops.pop(); _.trys.pop(); continue;\n                default:\n                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }\n                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }\n                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }\n                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }\n                    if (t[2]) _.ops.pop();\n                    _.trys.pop(); continue;\n            }\n            op = body.call(thisArg, _);\n        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }\n        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };\n    }\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nexports.storiesRouter = void 0;\nvar express_1 = __importDefault(__webpack_require__(/*! express */ \"express\"));\nvar StoryService = __importStar(__webpack_require__(/*! ./stories.service */ \"./src/stories/stories.service.ts\"));\n// Router\nexports.storiesRouter = express_1.default.Router();\n// Controller\n// Get stories/\nexports.storiesRouter.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {\n    var stories, error_1;\n    return __generator(this, function (_a) {\n        switch (_a.label) {\n            case 0:\n                _a.trys.push([0, 2, , 3]);\n                return [4 /*yield*/, StoryService.findAll()];\n            case 1:\n                stories = _a.sent();\n                res.status(200).send(stories);\n                return [3 /*break*/, 3];\n            case 2:\n                error_1 = _a.sent();\n                res.status(404).send(error_1.message);\n                return [3 /*break*/, 3];\n            case 3: return [2 /*return*/];\n        }\n    });\n}); });\n\n\n//# sourceURL=webpack:///./src/stories/stories.router.ts?");
-
-/***/ }),
-
-/***/ "./src/stories/stories.service.ts":
-/*!****************************************!*\
-  !*** ./src/stories/stories.service.ts ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n// Data model\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __generator = (this && this.__generator) || function (thisArg, body) {\n    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;\n    return g = { next: verb(0), \"throw\": verb(1), \"return\": verb(2) }, typeof Symbol === \"function\" && (g[Symbol.iterator] = function() { return this; }), g;\n    function verb(n) { return function (v) { return step([n, v]); }; }\n    function step(op) {\n        if (f) throw new TypeError(\"Generator is already executing.\");\n        while (_) try {\n            if (f = 1, y && (t = op[0] & 2 ? y[\"return\"] : op[0] ? y[\"throw\"] || ((t = y[\"return\"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;\n            if (y = 0, t) op = [op[0] & 2, t.value];\n            switch (op[0]) {\n                case 0: case 1: t = op; break;\n                case 4: _.label++; return { value: op[1], done: false };\n                case 5: _.label++; y = op[1]; op = [0]; continue;\n                case 7: op = _.ops.pop(); _.trys.pop(); continue;\n                default:\n                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }\n                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }\n                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }\n                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }\n                    if (t[2]) _.ops.pop();\n                    _.trys.pop(); continue;\n            }\n            op = body.call(thisArg, _);\n        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }\n        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };\n    }\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nexports.find = exports.findAll = void 0;\n// Fake Store\nvar stories = {\n    '1': {\n        id: '1',\n        content: 'Bé i sont pas mignons chez Google et tout.',\n        date: 1591438846803,\n        handle: 'SuperTruc',\n        isPositiveExperience: true,\n    }\n};\n// Methods\nexports.findAll = function () { return __awaiter(void 0, void 0, void 0, function () {\n    return __generator(this, function (_a) {\n        return [2 /*return*/, stories];\n    });\n}); };\nexports.find = function (id) { return __awaiter(void 0, void 0, void 0, function () {\n    var maybeStory;\n    return __generator(this, function (_a) {\n        maybeStory = stories[id];\n        if (maybeStory) {\n            return [2 /*return*/, maybeStory];\n        }\n        throw new Error(\"No Story Found\");\n    });\n}); };\n\n\n//# sourceURL=webpack:///./src/stories/stories.service.ts?");
+eval("module.exports = JSON.parse(\"{\\\"words\\\":[\\\"amical\\\",\\\"amicale\\\",\\\"amuse\\\",\\\"attentif\\\",\\\"attentive\\\",\\\"calme\\\",\\\"confiant\\\",\\\"content\\\",\\\"detendu\\\",\\\"enchante\\\",\\\"epanoui\\\",\\\"heureux\\\",\\\"heureuse\\\",\\\"implique\\\",\\\"impliquee\\\",\\\"libre\\\",\\\"plaisir\\\",\\\"rassure\\\",\\\"rassuree\\\",\\\"ravi\\\",\\\"ravie\\\",\\\"reconforte\\\",\\\"reconfortee\\\",\\\"satisfait\\\",\\\"satisfaite\\\",\\\"serein\\\",\\\"sereine\\\",\\\"abattu\\\",\\\"abattue\\\",\\\"accable\\\",\\\"accablee\\\",\\\"afflige\\\",\\\"affligee\\\",\\\"affole\\\",\\\"affolee\\\",\\\"agace\\\",\\\"agacee\\\",\\\"angoisse\\\",\\\"angoissee\\\",\\\"anxieux\\\",\\\"anxieuse\\\",\\\"blesse\\\",\\\"blessee\\\",\\\"choque\\\",\\\"choquee\\\",\\\"consterne\\\",\\\"consternee\\\",\\\"contrarie\\\",\\\"contrariee\\\",\\\"decourage\\\",\\\"decouragee\\\",\\\"decu\\\",\\\"decue\\\",\\\"degoute\\\",\\\"degoutee\\\",\\\"demoralise\\\",\\\"demoralisee\\\",\\\"demuni\\\",\\\"demunie\\\",\\\"depite\\\",\\\"depitee\\\",\\\"deprime\\\",\\\"deprimee\\\",\\\"depressif\\\",\\\"depressive\\\",\\\"douloureux\\\",\\\"douloureuse\\\",\\\"enerve\\\",\\\"enervee\\\",\\\"epuise\\\",\\\"furieuse\\\",\\\"haineux\\\",\\\"haineuse\\\",\\\"honteux\\\",\\\"honteuse\\\",\\\"abandonne\\\",\\\"abandonnee\\\",\\\"abuse\\\",\\\"abusee\\\",\\\"accuse\\\",\\\"accusee\\\",\\\"attaque\\\",\\\"attaquee\\\",\\\"coupable\\\",\\\"deconsidere\\\",\\\"deconsideree\\\",\\\"devalorise\\\",\\\"devalorisee\\\",\\\"diminue\\\",\\\"diminuee\\\",\\\"ecrase\\\",\\\"ecrasee\\\",\\\"etouffe\\\",\\\"etouffee\\\",\\\"harcele\\\",\\\"harcelee\\\",\\\"humilie\\\",\\\"humiliee\\\",\\\"ignore\\\",\\\"ignoree\\\",\\\"inadequat\\\",\\\"inadequate\\\",\\\"incompetent\\\",\\\"incompetente\\\",\\\"imcompris\\\",\\\"imcomprise\\\",\\\"insulte\\\",\\\"insultee\\\",\\\"invisible\\\",\\\"isole\\\",\\\"isolee\\\",\\\"juge\\\",\\\"jugee\\\",\\\"minable\\\",\\\"menace\\\",\\\"menacee\\\",\\\"meprise\\\",\\\"meprisee\\\",\\\"neglige\\\",\\\"negligee\\\",\\\"pietine\\\",\\\"pietinee\\\",\\\"rabaisse\\\",\\\"rabaissee\\\",\\\"rejete\\\",\\\"rejetee\\\",\\\"ridiculise\\\",\\\"ridiculisee\\\",\\\"stupide\\\",\\\"trahi\\\",\\\"trompe\\\",\\\"trompee\\\",\\\"utilise\\\",\\\"utilisee\\\"]}\");\n\n//# sourceURL=webpack:///./whitelist.json?");
 
 /***/ }),
 
 /***/ 0:
-/*!*************************************************!*\
-  !*** multi webpack/hot/poll?100 ./src/index.ts ***!
-  \*************************************************/
+/*!*******************************************!*\
+  !*** multi webpack/hot/poll?100 ./app.ts ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! webpack/hot/poll?100 */\"./node_modules/webpack/hot/poll.js?100\");\nmodule.exports = __webpack_require__(/*! ./src/index.ts */\"./src/index.ts\");\n\n\n//# sourceURL=webpack:///multi_webpack/hot/poll?");
+eval("__webpack_require__(/*! webpack/hot/poll?100 */\"./node_modules/webpack/hot/poll.js?100\");\nmodule.exports = __webpack_require__(/*! ./app.ts */\"./app.ts\");\n\n\n//# sourceURL=webpack:///multi_webpack/hot/poll?");
+
+/***/ }),
+
+/***/ "@feathersjs/express":
+/*!**************************************!*\
+  !*** external "@feathersjs/express" ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"@feathersjs/express\");\n\n//# sourceURL=webpack:///external_%22@feathersjs/express%22?");
+
+/***/ }),
+
+/***/ "@feathersjs/feathers":
+/*!***************************************!*\
+  !*** external "@feathersjs/feathers" ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"@feathersjs/feathers\");\n\n//# sourceURL=webpack:///external_%22@feathersjs/feathers%22?");
+
+/***/ }),
+
+/***/ "@feathersjs/transport-commons":
+/*!************************************************!*\
+  !*** external "@feathersjs/transport-commons" ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"@feathersjs/transport-commons\");\n\n//# sourceURL=webpack:///external_%22@feathersjs/transport-commons%22?");
 
 /***/ }),
 
@@ -920,25 +964,25 @@ eval("module.exports = require(\"dotenv\");\n\n//# sourceURL=webpack:///external
 
 /***/ }),
 
-/***/ "express":
-/*!**************************!*\
-  !*** external "express" ***!
-  \**************************/
+/***/ "feathers-nedb":
+/*!********************************!*\
+  !*** external "feathers-nedb" ***!
+  \********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = require(\"express\");\n\n//# sourceURL=webpack:///external_%22express%22?");
+eval("module.exports = require(\"feathers-nedb\");\n\n//# sourceURL=webpack:///external_%22feathers-nedb%22?");
 
 /***/ }),
 
-/***/ "helmet":
-/*!*************************!*\
-  !*** external "helmet" ***!
-  \*************************/
+/***/ "nedb":
+/*!***********************!*\
+  !*** external "nedb" ***!
+  \***********************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = require(\"helmet\");\n\n//# sourceURL=webpack:///external_%22helmet%22?");
+eval("module.exports = require(\"nedb\");\n\n//# sourceURL=webpack:///external_%22nedb%22?");
 
 /***/ })
 
