@@ -17,6 +17,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const whitelist = await getWhitelists();
   const highlightedStories = await getHighlightedStories();
 
+  // console.log('highlightedStories', highlightedStories);
+
   return {
     props: {
       highlightedStories,

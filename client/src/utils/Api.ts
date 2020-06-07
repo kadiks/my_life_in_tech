@@ -6,7 +6,6 @@ const postStory = async ({ handle, isPositiveExperience, content } = {}) => {
     isPositiveExperience,
     content,
   });
-  console.log('body', body);
   try {
     const res = await fetch(`${Config.API_URL}/stories`, {
       method: 'POST',
@@ -26,20 +25,26 @@ const postStory = async ({ handle, isPositiveExperience, content } = {}) => {
 };
 
 const getHighlightedStories = async () => {
-  const res = await fetch(`${Config.API_URL}/stories/highlighted`);
+  const url = `${Config.API_URL}/stories/highlighted`;
+  console.log('url', url);
+  const res = await fetch(url);
   const json = await res.json();
 
   return json;
 };
 const getStories = async () => {
-  const res = await fetch(`${Config.API_URL}/stories`);
+  const url = `${Config.API_URL}/stories`;
+  console.log('url', url);
+  const res = await fetch(url);
   const json = await res.json();
 
   return json;
 };
 
 const getWhitelists = async () => {
-  const res = await fetch(`${Config.API_URL}/whitelist`);
+  const url = `${Config.API_URL}/whitelist`;
+  console.log('url', url);
+  const res = await fetch(url);
   const json = await res.json();
 
   const whitelist = json.map((w) => w.word);
