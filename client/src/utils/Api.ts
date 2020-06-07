@@ -26,15 +26,15 @@ const postStory = async ({ handle, isPositiveExperience, content } = {}) => {
 
 const getHighlightedStories = async () => {
   const url = `${Config.API_URL}/stories/highlighted`;
-  console.log('url', url);
+  //   console.log('url', url);
   const res = await fetch(url);
   const json = await res.json();
 
   return json;
 };
 const getStories = async () => {
-  const url = `${Config.API_URL}/stories`;
-  console.log('url', url);
+  const url = `${Config.API_URL}/stories?$sort[date]=-1`;
+  //   console.log('url', url);
   const res = await fetch(url);
   const json = await res.json();
 
@@ -43,7 +43,7 @@ const getStories = async () => {
 
 const getWhitelists = async () => {
   const url = `${Config.API_URL}/whitelist`;
-  console.log('url', url);
+  //   console.log('url', url);
   const res = await fetch(url);
   const json = await res.json();
 

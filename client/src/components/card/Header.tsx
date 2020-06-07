@@ -5,7 +5,7 @@ export default ({ handle, date }) => {
   const dateStr = `${dateObj.getDate()}/${dateMonth}`;
   return (
     <div className="card-header">
-      <h3>{handle}</h3>
+      <h3>{handle === '' ? 'Anonyme' : handle}</h3>
       <time dateTime={date}>{dateStr}</time>
     </div>
   );
