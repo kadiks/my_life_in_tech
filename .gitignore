@@ -2,7 +2,6 @@
 */.env
 */node_modules/*
 */db/*
-*/dist/db/stories
 */dist/db/reactions
 
 */.next/*

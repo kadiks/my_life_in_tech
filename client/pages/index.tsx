@@ -124,7 +124,10 @@ class Home extends React.Component {
     return (
       <>
         <Head>
-          <title>Create Next App</title>
+          <title>
+            My life in tech : partage d'expériences pour les minorités de la
+            tech française
+          </title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Navigation />
