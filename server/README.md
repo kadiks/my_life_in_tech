@@ -30,12 +30,12 @@ POST | GET           /stories/{storyId}/reactions
 DELETE /stories/{storyId} 
 ```
 
-### POST `/stories`
+### `POST /stories`
 
 #### Request body
 
 ```
-interface postComment{
+interface PostComment{
   content: string,
   handle?: string,
   isPositiveExperience?: boolean
@@ -45,7 +45,7 @@ interface postComment{
 #### Response body
 
 ```
-interface postCommentRes{
+interface PostCommentRes{
   _id: string,
   content: string,
   handle?: string,
@@ -54,13 +54,21 @@ interface postCommentRes{
 }
 ```
 
+#### In action
 
 ```
 curl -d content="J'ai mal au crâne" -d handle="petitPanda" -d isPositiveExperience=false http://localhost:7000/stories/
 ```
 =>
 ```
-{"_id":"5ee5190c656a206711ee7bfb","content":"J'ai mal au crâne","handle":"petitPanda","isPositiveExperience":false,"date":1592072460991,"__v":0}
+{
+  "_id":"5ee5190c656a206711ee7bfb",
+  "content":"J'ai mal au crâne",
+  "handle":"petitPanda",
+  "isPositiveExperience":false,
+  "date":1592072460991,
+  "__v":0
+}
 ```
 
 ### GET /stories
@@ -68,8 +76,9 @@ curl -d content="J'ai mal au crâne" -d handle="petitPanda" -d isPositiveExperie
 #### Response body
 
 ```
-interface postCommentRes{
+interface PostCommentRes{
   _id: string,
+  whitelist: array<string>,
   content: string,
   handle?: string,
   isPositiveExperience?: string,
@@ -77,30 +86,91 @@ interface postCommentRes{
 }
 ```
 
+#### In action
 
-## POST
+```
+curl http://localhost:7000/stories
+```
+=>
+```
+[
+  {
+    "whiteList":[],
+    "_id":"5ee5190c656a206711ee7bfb",
+    "content":"J'ai mal au crâne",
+    "handle":"petitPanda",
+    "isPositiveExperience":false,
+    "date":1592072460991,"__v":0
+  },
+  {
+    "whiteList":[],
+    "_id":"5ee51923656a206711ee7bfc",
+    "content":"Mon chef c'est un pabo",
+    "handle":"jolieMenthe",
+    "isPositiveExperience":false,
+    "date":1592072483288,
+    "__v":0
+  },
+  {
+    "whiteList":[],
+    "_id":"5ee51931656a206711ee7bfd",
+    "content":"Trop bon le café",
+    "handle":"MinnieWinnie",
+    "isPositiveExperience":true,
+    "date":1592072497419,
+    "__v":0
+  }
+]
+```
 
-- `/stories/`
+## Reactions
 
-Expects a body with
-`{ content: string, handle: string, isPositiveExperience: boolean }`.
-`handle` and `isPositiveExperience` are optional.
+### Endpoints
 
-`curl -d content="J'ai mal au crâne" -d handle="petitPanda" -d isPositiveExperience=false http://<HOST>:<PORT>/stories/`
+```
+POST /stories/{storyId}/reactions/
+ GET /stories/{storyId}/reactions/
+```
 
-- `/stories/{storyId}/reactions/`
+### `POST /stories/{storyId}/reactions/`
 
-Expects a `storyId` in the path and a body with
-`{ reaction: string }`
+#### Request body
 
-`curl -d comment="sob" http://<HOST>:<PORT>/stories/{storyId}/comments`
+```
+interface PostReaction{
+  reaction: string,
+}
+```
 
-- `stories/{storyId}/comments/`
+#### Response body
 
-Expects a `storyId` in the path and a body with
-`{ comment: string }`
+```
+interface PostReactionResponse{
+  _id: string,
+  reaction: string,
+  date: number,
+  storyId: string,
+  __v:0
+}
+```
 
-`curl -d comment="mais prout quoi" http://<HOST>:<PORT>/stories/{storyId}/comments`
+#### In action
+
+```
+curl -d reaction="happy" http://localhost:7000/stories/5ee51931656a206711ee7bfd/reactions
+```
+=>
+```
+{
+  "_id":"5ee519a8656a206711ee7bfe",
+  "reaction":"happy",
+  "date":1592072616286,
+  "storyId":"5ee51931656a206711ee7bfd",
+  "__v":0}
+```
+
+
+
 
 ## GET
 
