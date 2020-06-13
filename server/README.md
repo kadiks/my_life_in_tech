@@ -58,9 +58,9 @@ interface PostCommentRes{
 
 ```
 curl -d content="J'ai mal au crâne" -d handle="petitPanda" -d isPositiveExperience=false http://localhost:7000/stories/
-```
+
 =>
-```
+
 {
   "_id":"5ee5190c656a206711ee7bfb",
   "content":"J'ai mal au crâne",
@@ -68,6 +68,19 @@ curl -d content="J'ai mal au crâne" -d handle="petitPanda" -d isPositiveExperie
   "isPositiveExperience":false,
   "date":1592072460991,
   "__v":0
+}
+```
+
+```
+curl -d content="" -d handle="petitPanda" -d isPositiveExperience=false http://localhost:7000/stories/
+=> 
+{
+  "name":"GeneralError",
+  "message":"Story content can not be empty",
+  "code":500,
+  "className":"general-error",
+  "data":{},
+  "errors":{}
 }
 ```
 
@@ -158,15 +171,30 @@ interface PostReactionResponse{
 
 ```
 curl -d reaction="happy" http://localhost:7000/stories/5ee51931656a206711ee7bfd/reactions
-```
+
 =>
-```
+
 {
   "_id":"5ee519a8656a206711ee7bfe",
   "reaction":"happy",
   "date":1592072616286,
   "storyId":"5ee51931656a206711ee7bfd",
   "__v":0
+}
+```
+
+```
+curl -d comment="" http://localhost:7000/stories/5ee51931656a206711ee7bfd/comments
+
+=> 
+
+{
+  "name":"GeneralError",
+  "message":"Comment cannot be empty",
+  "code":500,
+  "className":"general-error",
+  "data":{},
+  "errors":{}
 }
 ```
 
