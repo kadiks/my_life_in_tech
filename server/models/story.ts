@@ -9,9 +9,6 @@ const StorySchema = new Schema({
     isPositiveExperience: 'boolean'
 });
 
-StorySchema.set('toJSON', { virtuals: true });
-StorySchema.set('toObject', { virtuals: true });
-
 const StoryModel = model('Story', StorySchema);
 
 export default StoryModel;

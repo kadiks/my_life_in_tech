@@ -15,7 +15,7 @@ const linkToId = async (context: HookContext) => {
 
 const filterHandle = async (context: HookContext) => {
     if (!context.data.handle) {
-	context.data.handle = '';
+        context.data.handle = '';
     }
     return context;
 };
@@ -41,16 +41,55 @@ const filterByStory = async (context: HookContext) => {
     return context;
 };
 
+function createWhiteList(comment: any): Array<string>{
+    const whiteWords = whitelist.words;
+    const storyWords = comment.split(' ');
+    const whiteList = whiteWords.filter((w: string) => storyWords.includes(w));
+    return whiteList;
+}
+
+const addWhiteList = async (context: HookContext) => {
+    const story = context.result;
+    story.whiteList = createWhiteList(story.content);
+    console.log(story);
+};
+
 const addWhitelists = async (context: HookContext) => {
-    const words = whitelist.words;
-    const tempResult = context.result;
-    for (const story of tempResult) {
-	const storyWords = story.content.split(' ');
-	const found = words.filter((w) => storyWords.includes(w));
-	story.whitelist = found;
-    }
+    const stories = context.result.map( (story: any) => {
+	const whiteList = createWhiteList(story.content);
+	return { whiteList, ...story };
+    });
+    context.result = stories;
     return context;
 };
+
+interface StoryReaction{
+   _id: string,
+    reaction: string,
+    date: number,
+    storyId: string,
+    __v: number
+}
+
+interface ReactionCounts{
+    [propName: string]: number,
+}
+
+const mergeCount = async (context: HookContext) => {
+    let result: Array<StoryReaction> = context.result
+    let counts: ReactionCounts = {}
+    result.forEach( (item: StoryReaction) => {
+	if(item.reaction in counts){
+	    counts[item.reaction]++;
+	}else{
+	    counts[item.reaction] = 1;
+	}
+    })
+    context.result = counts;
+    console.log(counts);
+    return context;
+};
+
 
 const addReactions = async (context: HookContext) => {
     return context;
@@ -61,6 +100,9 @@ const storyHook = {
 	create: [createdAt, filterHandle],
     },
     after: {
+	// One story
+	get: [addWhiteList, addReactions],
+	// All stories
 	find: [addWhitelists, addReactions],
     },
 };
@@ -76,11 +118,22 @@ const highlightHook = {
 };
 
 const reactionsHook = {
-  before: {
-      create: [createdAt, linkToId],
-      find: [filterByStory],
-  },
+    before: {
+	create: [createdAt, linkToId],
+	find: [filterByStory],
+    },
 };
+
+const reactionsCountHook = {
+    before: {
+	create: [createdAt, linkToId],
+	find: [filterByStory],
+    },
+    after: {
+	find: [mergeCount],
+    }
+}
+
 
 const commentsHook = {
   before: {
@@ -89,11 +142,11 @@ const commentsHook = {
   },
 };
 
-//
-
 export default {
     story: storyHook,
     highlighted: highlightHook,
     reactions: reactionsHook,
+    reactionsCount: reactionsCountHook,
     comments: commentsHook,
 };
+

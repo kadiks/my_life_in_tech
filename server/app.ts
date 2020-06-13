@@ -62,10 +62,13 @@ app.configure(express.rest());
 //   Stories
 app.use('/stories/highlighted', service({ Model: StoryModel }));
 app.service('stories/highlighted').hooks(hooks.highlighted);
-app.use('/stories', service({ Model: StoryModel, lean: false }));
+app.use('/stories', service({ Model: StoryModel }));
 app.service('stories').hooks(hooks.story);
 // Whitelist
 app.use('/whitelist', service({ Model: WordModel }));
+// Reaction Count
+app.use('/stories/:storyId/reactions/count', service({ Model: ReactionModel }));
+app.service('stories/:storyId/reactions/count').hooks(hooks.reactionsCount);
 //  Reaction
 app.use('/stories/:storyId/reactions', service({ Model: ReactionModel }));
 app.service('stories/:storyId/reactions').hooks(hooks.reactions);
