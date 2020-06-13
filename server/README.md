@@ -9,12 +9,12 @@ Add .env with PORT and DBUSER, DBPSWD, DBNAME, DBNAME_DEV
 - `DBNAME_DEV` is the name of the dev database.
 
 - run nodemon
-- - lalala
-- - troll farceur
+  - lalala
+  - troll farceur
 - Et l'autre truc
-- - wouaf
-- - ploum ploum ploum
-- - zog zog
+  - wouaf
+  - ploum ploum ploum
+  - zog zog
 
 ## The routes are as follows
 
