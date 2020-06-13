@@ -33,7 +33,7 @@ Expects a body with
 Expects a `storyId` in the path and a body with
 `{ reaction: string }`
 
-`curl -d comment="mais prout quoi" http://<HOST>:<PORT>/stories/{storyId}/comments`
+`curl -d comment="sob" http://<HOST>:<PORT>/stories/{storyId}/comments`
 
 - `stories/{storyId}/comments/`
 
