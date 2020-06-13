@@ -163,7 +163,7 @@ interface PostReactionResponse{
   reaction: string,
   date: number,
   storyId: string,
-  __v:0
+  __v: number
 }
 ```
 
@@ -182,6 +182,61 @@ curl -d reaction="happy" http://localhost:7000/stories/5ee51931656a206711ee7bfd/
   "__v":0
 }
 ```
+
+
+```
+curl -d reaction="" http://localhost:7000/stories/5ee51931656a206711ee7bfd/reactions
+
+=>
+
+{
+  "name":"GeneralError",
+  "message":"Reaction cannot be empty",
+  "code":500,
+  "className":"general-error",
+  "data":{},
+  "errors":{}
+}
+```
+
+### `POST /stories/{storyId}/coments/`
+
+#### Request body
+
+```
+interface PostComment{
+  comment: string,
+}
+```
+
+#### Response body
+
+```
+interface PostCommentResponse{
+  _id: string,
+  comment: string,
+  date: number,
+  storyId: string,
+  __v: number
+}
+```
+
+#### In action
+
+```
+curl -d comment="Minilove is the best place 3v4r like soooo souite" http://localhost:7000/stories/5ee51931656a206711ee7bfd/comments
+
+=>
+
+{
+  "_id":"5ee530c8734f7270527cfe72",
+  "comment":"Minilove is the best place 3v4r like soooo souite",
+  "date":1592078536720,
+  "storyId":"5ee51931656a206711ee7bfd",
+  "__v":0
+}
+```
+
 
 ```
 curl -d comment="" http://localhost:7000/stories/5ee51931656a206711ee7bfd/comments
