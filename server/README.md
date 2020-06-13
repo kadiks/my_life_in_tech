@@ -166,38 +166,10 @@ curl -d reaction="happy" http://localhost:7000/stories/5ee51931656a206711ee7bfd/
   "reaction":"happy",
   "date":1592072616286,
   "storyId":"5ee51931656a206711ee7bfd",
-  "__v":0}
-```
-
-
-
-
-## GET
-
-### Story
-
-- _id: 'string'
-- content: 'string'
-- date: 'number'
-- handle: 'string'
-- isPositiveExperience: 'boolean'
-
-- /story/:id returns a unique story
--`/stories` an array of story
-- /stories/highlighted returns 3 stories
-
-### Reaction
-
-```
-interface StoryReaction{
-   _id: string,
-    reaction: string,
-    date: number,
-    storyId: string,
-    __v: number
+  "__v":0
 }
-
 ```
+
 
 ### Reaction Count
 
@@ -207,9 +179,3 @@ interface ReactionCounts{
 }
 ```
 
-### Comment
-
-- id : 'string'
-- storyId: 'string',
-- comment: 'string',
-- date: 'number'
