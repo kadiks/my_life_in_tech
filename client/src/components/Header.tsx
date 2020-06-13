@@ -17,7 +17,6 @@ const Post = ({ post = {}, whitelist } = {}) => {
 };
 
 const Content = ({ content = 'My life in tech' } = {}) => {
-  console.log('Ookokok', content, typeof content, content.length);
   if (content.length === 0) {
     content = 'My life in tech';
   }

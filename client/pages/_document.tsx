@@ -34,6 +34,7 @@ class MyDocument extends Document {
           />
           <link rel="stylesheet" href="/css/bootstrap-grid.min.css" />
           <link rel="stylesheet" href="/css/all.min.css" />
+          <link rel="stylesheet" href="/css/loader.css" />
           <link rel="stylesheet" href="/css/style.css" />
           <link rel="stylesheet" href="/css/add-xp.css" />
         </Head>

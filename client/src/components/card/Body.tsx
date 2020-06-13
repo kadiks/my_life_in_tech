@@ -1,6 +1,7 @@
+import Link from 'next/link';
 import { getContentWithWhitelist } from '../../utils/text';
 
-export default ({ content, whitelist }) => {
+export default ({ _id, content, whitelist }) => {
   const updatedContent = getContentWithWhitelist({
     content,
     whitelist,
@@ -8,7 +9,9 @@ export default ({ content, whitelist }) => {
   return (
     <div className="card-body">
       {/* <p>{updatedContent}</p> */}
-      <p dangerouslySetInnerHTML={updatedContent} />
+      <Link href={`/story/${_id}`}>
+        <p dangerouslySetInnerHTML={updatedContent} />
+      </Link>
     </div>
   );
 };
