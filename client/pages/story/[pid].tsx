@@ -7,7 +7,37 @@ import Footer from '../../src/components/Footer';
 import { css } from 'emotion';
 
 const FormStyle = css`
-  background-color:grey;
+  background-color: rgba(99, 93, 93, 0.7);
+  border-radius: 2px;
+  padding: 5px;
+`;
+
+const reactionsBox = css`
+  position: absolute;
+  top: -2rem;
+  right: 0;
+`;
+
+const postStyle = css`
+  position: relative;
+  border-bottom: 1px solid black;
+
+  &hover: {
+    ${reactionsBox} {
+      display: block;
+    }
+  }
+`;
+
+const CommentStyle = css`
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  border-bottom: 1px solid black;
+  padding: 6px;
+`;
+
+const submitStyle = css`
+  position: absolute;
 `;
 
 class Story extends React.Component {
@@ -15,8 +45,10 @@ class Story extends React.Component {
     super(props);
 
     this.state = {
-      reactions: ['com1','com2'],
+      comments: ['com1', 'com2'],
     };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   static async getInitialProps({ req, pathname, query, asPath }) {
@@ -34,35 +66,49 @@ class Story extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const {reactions} = this.state;
     console.log(event);
-    this.setState({reactions: reactions.push(event.target.value)});
-    
   }
 
   render() {
-    const {reactions} = this.state;
     const { story } = this.props;
-    const reactionsList = reactions.map((item, index) => <p key={index}>{item}</p>);
-    console.log(reactions);
+    const comments = ['com1', 'com2'].map((item, index) => (
+      <div>
+        <p className={CommentStyle} key={index}>
+          {item}
+        </p>
+      </div>
+    ));
+
     return (
       <>
-        <Navigation/>
-        <div>
-          <p>Id: {story._id}</p>
-          <p>Content: {story.content}</p>
-          <p>Date: {story.date}</p>
+        <Navigation />
+
+        <form
+          className={`${FormStyle} col-12 col-md-6 col-lg-6 `}
+          onSubmit={this.handleSubmit}
+        >
+          <div className={postStyle}>
+            <p>Date: {story.date}</p>
+            <p>{story.content}</p>
+            <div className={reactionsBox}>
+              <span className="fas fa-surprise" />
+              <span className="fas fa-surprise" />
+              <span className="fas fa-surprise" />
+            </div>
+          </div>
+
+          <div>{comments}</div>
           <div>
-            {reactionsList}
+            <input className={CommentStyle} type="text" />
+
+            <span
+              className={` ${submitStyle} far fa-paper-plane`}
+              onClick={this.handleSubmit}
+            />
           </div>
-          <div className={FormStyle}>
-          <form onSubmit={this.handleSubmit}>
-            <input type="text" />
-            <button type="submit" >Submit</button>
-          </form>
-          </div>
-        </div>
-        <Footer/>
+        </form>
+
+        <Footer />
       </>
     );
   }
