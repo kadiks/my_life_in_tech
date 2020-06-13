@@ -2,11 +2,11 @@
 
 Add .env with PORT and DBUSER, DBPSWD, DBNAME, DBNAME_DEV
 
--`PORT` is the HTTP port for the server.
--`DBUSER` is the db username
--`DBPSWD` is the db user password
--`DBNAME` is the name of the database.
--`DBNAME_DEV` is the name of the dev database.
+- `PORT` is the HTTP port for the server.
+- `DBUSER` is the db username
+- `DBPSWD` is the db user password
+- `DBNAME` is the name of the database.
+- `DBNAME_DEV` is the name of the dev database.
 
 - run nodemon
 
