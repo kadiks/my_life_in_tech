@@ -3,6 +3,16 @@ import feathers from '@feathersjs/feathers';
 import '@feathersjs/transport-commons';
 import express from '@feathersjs/express';
 
+const mongoose = require('mongoose');
+const service = require('feathers-mongoose');
+
+import StoryModel from './models/story';
+import WordModel from './models/word';
+import ReactionModel from './models/reaction';
+import CommentModel from './models/comment';
+
+mongoose.Promise = global.Promise;
+
 import NeDB from 'nedb';
 import createService from 'feathers-nedb';
 
@@ -11,16 +21,30 @@ import services from './services';
 
 import cors from 'cors';
 
-// General Setup
+// Environment Variables Get, Check & Assign
 
 dotenv.config();
 
-if (!process.env.PORT) {
-  console.error('No port found in .env');
-  process.exit(1);
-}
+[ 'PORT', 'DBNAME', 'DBUSER', 'DBPSWD' ].forEach( envKey => {
+    if(!process.env[envKey]){
+	console.log(`No ${envKey} in .env`);
+	process.exit(1);
+    }
+})
+
+// DB Connect
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
+const { DBNAME, DBUSER, DBPSWD } = process.env;
+
+const dburi = `mongodb+srv://${DBUSER}:${DBPSWD}@cluster0-ofiq6.mongodb.net/${DBNAME}?retryWrites=true&w=majority`
+const dbConnectOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}
+
+mongoose.connect(dburi, dbConnectOptions);
+
 
 const app = express(feathers());
 
@@ -36,24 +60,32 @@ app.configure(express.rest());
 
 // Services registration
 //   Stories
-app.use('/stories/highlighted', services.highlighted);
-app.use('/stories', services.stories);
-app.service('stories').hooks(hooks.story);
+app.use('/stories/highlighted', service({ Model: StoryModel }));
 app.service('stories/highlighted').hooks(hooks.highlighted);
+app.use('/stories', service({ Model: StoryModel }));
+app.service('stories').hooks(hooks.story);
 // Whitelist
-app.use('/whitelist', services.whitelist);
+app.use('/whitelist', service({ Model: WordModel }));
+// Reaction Count
+app.use('/stories/:storyId/reactions/count', service({ Model: ReactionModel }));
+app.service('stories/:storyId/reactions/count').hooks(hooks.reactionsCount);
 //  Reaction
-app.use('/stories/:storieId/reactions', services.reactions);
-app.service('stories/:storieId/reactions').hooks(hooks.reactions);
+app.use('/stories/:storyId/reactions', service({ Model: ReactionModel }));
+app.service('stories/:storyId/reactions').hooks(hooks.reactions);
+// Comments
+app.use('/stories/:storyId/comments', service({ Model: CommentModel }));
+app.service('stories/:storyId/comments').hooks(hooks.comments);
 // Express midlleware / Neat error handler
 app.use(express.errorHandler());
 
+
 // Start the server
+
 const server = app
-  .listen(PORT)
-  .on('listening', () =>
+.listen(PORT)
+.on('listening', () =>
     console.log(`Feathers server listening on localhost:${PORT}`)
-  );
+);
 
 type ModuleId = string | number;
 
