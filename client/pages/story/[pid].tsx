@@ -1,7 +1,24 @@
 import React from 'react';
 import { getStory, getStories } from '../../src/utils/Api';
 
+import Navigation from '../../src/components/navigation';
+import Header from '../../src/components/Header';
+import Footer from '../../src/components/Footer';
+import { css } from 'emotion';
+
+const FormStyle = css`
+  background-color:grey;
+`;
+
 class Story extends React.Component {
+  constructor(props: void) {
+    super(props);
+
+    this.state = {
+      reactions: ['com1','com2'],
+    };
+  }
+
   static async getInitialProps({ req, pathname, query, asPath }) {
     // console.log('pathname', pathname);
     // console.log('query', query);
@@ -15,14 +32,38 @@ class Story extends React.Component {
 
   async componentDidMount() {}
 
+  handleSubmit(event) {
+    event.preventDefault();
+    const {reactions} = this.state;
+    console.log(event);
+    this.setState({reactions: reactions.push(event.target.value)});
+    
+  }
+
   render() {
+    const {reactions} = this.state;
     const { story } = this.props;
+    const reactionsList = reactions.map((item, index) => <p key={index}>{item}</p>);
+    console.log(reactions);
     return (
-      <div>
-        <p>Id: {story._id}</p>
-        <p>Content: {story.content}</p>
-        <p>Date: {story.date}</p>
-      </div>
+      <>
+        <Navigation/>
+        <div>
+          <p>Id: {story._id}</p>
+          <p>Content: {story.content}</p>
+          <p>Date: {story.date}</p>
+          <div>
+            {reactionsList}
+          </div>
+          <div className={FormStyle}>
+          <form onSubmit={this.handleSubmit}>
+            <input type="text" />
+            <button type="submit" >Submit</button>
+          </form>
+          </div>
+        </div>
+        <Footer/>
+      </>
     );
   }
 }
