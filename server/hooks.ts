@@ -86,7 +86,6 @@ const mergeCount = async (context: HookContext) => {
 	}
     })
     context.result = counts;
-    console.log(counts);
     return context;
 };
 

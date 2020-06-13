@@ -25,19 +25,22 @@ import cors from 'cors';
 
 dotenv.config();
 
-[ 'PORT', 'DBNAME', 'DBUSER', 'DBPSWD' ].forEach( envKey => {
+[ 'PORT', 'DBUSER', 'DBPSWD', 'DBNAME', 'DBNAME_DEV' ].forEach( envKey => {
     if(!process.env[envKey]){
 	console.log(`No ${envKey} in .env`);
 	process.exit(1);
     }
 })
 
+const PORT: number = parseInt(process.env.PORT as string, 10);
+let { DBUSER, DBPSWD, DBNAME, DBNAME_DEV, NODE_ENV } = process.env;
+
+DBNAME = NODE_ENV === 'production' ? DBNAME : DBNAME_DEV;
+
 // DB Connect
 
-const PORT: number = parseInt(process.env.PORT as string, 10);
-const { DBNAME, DBUSER, DBPSWD } = process.env;
-
 const dburi = `mongodb+srv://${DBUSER}:${DBPSWD}@cluster0-ofiq6.mongodb.net/${DBNAME}?retryWrites=true&w=majority`
+
 const dbConnectOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true
