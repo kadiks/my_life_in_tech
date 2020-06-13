@@ -20,6 +20,25 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const whitelist = __importStar(require("./whitelist.json"));
+const hasContent = async (context) => {
+    const { content } = context.data;
+    if (!content) {
+        throw new Error('Story content cannot be empty');
+    }
+    return context;
+};
+const hasReaction = async (context) => {
+    const { reaction } = context.data;
+    if (!reaction) {
+        throw new Error('Reaction cannot be empty');
+    }
+};
+const hasComment = async (context) => {
+    const { comment } = context.data;
+    if (!comment) {
+        throw new Error('Comment cannot be empty');
+    }
+};
 const createdAt = async (context) => {
     context.data.date = Date.now();
     return context;
@@ -83,7 +102,6 @@ const mergeCount = async (context) => {
         }
     });
     context.result = counts;
-    console.log(counts);
     return context;
 };
 const addReactions = async (context) => {
@@ -91,7 +109,7 @@ const addReactions = async (context) => {
 };
 const storyHook = {
     before: {
-        create: [createdAt, filterHandle],
+        create: [hasContent, createdAt, filterHandle],
     },
     after: {
         // One story
@@ -110,7 +128,7 @@ const highlightHook = {
 };
 const reactionsHook = {
     before: {
-        create: [createdAt, linkToId],
+        create: [hasReaction, createdAt, linkToId],
         find: [filterByStory],
     },
 };
@@ -125,7 +143,7 @@ const reactionsCountHook = {
 };
 const commentsHook = {
     before: {
-        create: [createdAt, linkToId],
+        create: [hasComment, createdAt, linkToId],
         find: [filterByStory],
     },
 };

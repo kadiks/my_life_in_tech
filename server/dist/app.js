@@ -37,15 +37,16 @@ const hooks_1 = __importDefault(require("./hooks"));
 const cors_1 = __importDefault(require("cors"));
 // Environment Variables Get, Check & Assign
 dotenv.config();
-['PORT', 'DBNAME', 'DBUSER', 'DBPSWD'].forEach(envKey => {
+['PORT', 'DBUSER', 'DBPSWD', 'DBNAME', 'DBNAME_DEV'].forEach(envKey => {
     if (!process.env[envKey]) {
         console.log(`No ${envKey} in .env`);
         process.exit(1);
     }
 });
-// DB Connect
 const PORT = parseInt(process.env.PORT, 10);
-const { DBNAME, DBUSER, DBPSWD } = process.env;
+let { DBUSER, DBPSWD, DBNAME, DBNAME_DEV, NODE_ENV } = process.env;
+DBNAME = NODE_ENV === 'production' ? DBNAME : DBNAME_DEV;
+// DB Connect
 const dburi = `mongodb+srv://${DBUSER}:${DBPSWD}@cluster0-ofiq6.mongodb.net/${DBNAME}?retryWrites=true&w=majority`;
 const dbConnectOptions = {
     useNewUrlParser: true,
