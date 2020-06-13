@@ -13,13 +13,72 @@ Add .env with PORT and DBUSER, DBPSWD, DBNAME, DBNAME_DEV
 ## The routes are as follows
 
 ```
-[GET | POST] /stories
-[GET | DELETE] /stories/{storyId}
-[GET] /stories/highlighted
-[GET | POST] /stories/{storyId}/comments
-[GET | POST] /stories/{storyId}/reactions
-[GET] /stories/{storyId}/reaction/count
+POST | GET           /stories
+       GET | DELETE  /stories/{storyId}
+       GET           /stories/highlighted
+POST | GET           /stories/{storyId}/comments
+POST | GET           /stories/{storyId}/reactions
+       GET           /stories/{storyId}/reaction/count
 ```
+
+## Stories
+
+### Endpoints
+
+```
+  POST /stories
+   GET /stories
+   GET /stories/{storyId}
+DELETE /stories/{storyId} 
+```
+
+### POST /stories
+
+#### Request body
+
+```
+interface postComment{
+  content: string,
+  handle?: string,
+  isPositiveExperience?: boolean
+}
+```
+
+#### Response body
+
+```
+interface postCommentRes{
+  _id: string,
+  content: string,
+  handle?: string,
+  isPositiveExperience?: string,
+  date: number
+}
+```
+
+
+```
+curl -d content="J'ai mal au crâne" -d handle="petitPanda" -d isPositiveExperience=false http://localhost:7000/stories/
+```
+=>
+```
+{"_id":"5ee5190c656a206711ee7bfb","content":"J'ai mal au crâne","handle":"petitPanda","isPositiveExperience":false,"date":1592072460991,"__v":0}
+```
+
+### GET /stories
+
+#### Response body
+
+```
+interface postCommentRes{
+  _id: string,
+  content: string,
+  handle?: string,
+  isPositiveExperience?: string,
+  date: number
+}
+```
+
 
 ## POST
 
