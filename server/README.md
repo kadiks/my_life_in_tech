@@ -15,7 +15,8 @@ password and `DBNAME` is the name of the database.
 [GET | DELETE] /stories/{storyId}
 [GET] /stories/highlighted
 [GET | POST] /stories/{storyId}/comments
-[GET | POST] /stories/{sotryId}/reactions
+[GET | POST] /stories/{storyId}/reactions
+[GET] /stories/{storyId}/reaction/count
 ```
 
 ## POST
@@ -53,15 +54,29 @@ Expects a `storyId` in the path and a body with
 - isPositiveExperience: 'boolean'
 
 - /story/:id returns a unique story
--`/stories` data is an array of story:
+-`/stories` an array of story
 - /stories/highlighted returns 3 stories
 
 ### Reaction
 
-- id : 'string'
-- storyId: 'string',
-- reaction: 'string',
-- date: 'number'
+```
+interface StoryReaction{
+   _id: string,
+    reaction: string,
+    date: number,
+    storyId: string,
+    __v: number
+}
+
+```
+
+### Reaction Count
+
+```
+interface ReactionCounts{
+    [propName: string]: number,
+}
+```
 
 ### Comment
 
