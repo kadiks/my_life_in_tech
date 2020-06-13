@@ -41,6 +41,16 @@ const getStories = async () => {
   return json;
 };
 
+const getStory = async ({ id }) => {
+  console.log('id', id);
+  const url = `${Config.API_URL}/stories/${id}`;
+  //   console.log('url', url);
+  const res = await fetch(url);
+  const json = await res.json();
+
+  return json;
+};
+
 const getWhitelists = async () => {
   const url = `${Config.API_URL}/whitelist`;
   //   console.log('url', url);
@@ -56,4 +66,10 @@ const getWhitelists = async () => {
   return whitelist;
 };
 
-export { postStory, getHighlightedStories, getStories, getWhitelists };
+export {
+  postStory,
+  getHighlightedStories,
+  getStories,
+  getStory,
+  getWhitelists,
+};
