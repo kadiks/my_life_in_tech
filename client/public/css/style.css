@@ -154,7 +154,10 @@ header .author {
   opacity: 1;
 }
 .card:hover .card-footer ul.selected li {
-  opacity: 0;
+  opacity: 0.1;
+}
+.card-footer ul.selected li {
+  opacity: 0.1;
 }
 .card:hover .card-footer ul.selected li.selected,
 .card-footer ul.selected li.selected {

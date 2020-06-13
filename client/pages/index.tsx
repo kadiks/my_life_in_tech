@@ -266,11 +266,7 @@ class Home extends React.Component {
         thirdColStories.push(story);
       }
     });
-    console.log(firstColStories.map((f) => f._id));
-    // console.log('firstColStories.length #2', firstColStories.length);
-    // setFirstColStories(firstColStories);
-    // setSecondColStories(secondColStories);
-    // setThirdColStories(thirdColStories);
+    // console.log(firstColStories.map((f) => f._id));
     if (firstColStories.length === this.state.firstColStories.length) {
       this.setState({
         isLoading: false,

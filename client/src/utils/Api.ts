@@ -61,7 +61,7 @@ const getStories = async ({ limit = null, skip = null } = {}) => {
     params['$skip'] = skip;
   }
   const url = `${Config.API_URL}/stories?${qs.stringify(params)}`;
-  console.log('#getStories url', url);
+  // console.log('#getStories url', url);
   const res = await fetch(url);
   const json = await res.json();
 
@@ -69,7 +69,7 @@ const getStories = async ({ limit = null, skip = null } = {}) => {
 };
 
 const getStory = async ({ id }) => {
-  console.log('id', id);
+  // console.log('#getStory id', id);
   const url = `${Config.API_URL}/stories/${id}`;
   //   console.log('url', url);
   const res = await fetch(url);
@@ -101,6 +101,7 @@ const getStoryReactions = async ({ storyId }) => {
 };
 
 const incrementReaction = async ({ name, storyId }) => {
+  console.log('#incrementReaction name', name);
   const url = `${Config.API_URL}/stories/${storyId}/reactions`;
   try {
     const res = await fetch(url, {
@@ -110,7 +111,7 @@ const incrementReaction = async ({ name, storyId }) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name,
+        reaction: name,
       }),
     });
     const json = await res.json();

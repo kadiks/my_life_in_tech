@@ -20,7 +20,7 @@ const users = [
     image: 'http://jenaiccambre.com/static/img/jenaic_cambre.jpg',
     projectTitle: 'Développeur frontend & chef de projet',
     content: 'Software Architect',
-    link: 'https://jenaiccambre.com/',
+    link: 'http://jenaiccambre.com/',
   },
 ];
 

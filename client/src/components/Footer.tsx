@@ -14,7 +14,13 @@ export default () => {
                   Made with &nbsp;<i className="fas fa-heart"></i>&nbsp; by
                 </p>
               </div>
-              {UserData.map((user, index) => {
+              {[
+                ...UserData,
+                {
+                  username: '???',
+                  projectTitle: 'Designer, pourquoi pas toi ? :-D',
+                },
+              ].map((user, index) => {
                 return (
                   <div className="col" key={index}>
                     <UserFooter {...user} />

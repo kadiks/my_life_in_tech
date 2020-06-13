@@ -1,8 +1,10 @@
 import React from 'react';
+import { css } from 'emotion';
+
 import { Icon } from '../core';
 import Reaction from './Reaction';
 
-import { incrementReaction } from '../../utils/Api';
+import { incrementReaction, getStoryReactions } from '../../utils/Api';
 
 export default class Reactions extends React.Component {
   constructor(props) {
@@ -11,24 +13,47 @@ export default class Reactions extends React.Component {
     this.state = {
       selected: '',
       isClicked: false,
-      reactions: {},
+      reactions: {
+        'thumbs-up': 0,
+        heart: 0,
+        'grin-hearts': 0,
+        flushed: 0,
+        'sad-tear': 0,
+        angry: 0,
+      },
     };
 
     this.onClick = this.onClick.bind(this);
   }
 
+  async componentDidMount() {
+    const loadedReactions = await getStoryReactions({
+      storyId: this.props.storyId,
+    });
+    const reactions = Object.assign({}, this.state.reactions);
+    Object.keys(loadedReactions).forEach((k) => {
+      if (reactions.hasOwnProperty(k) === false) {
+        delete loadedReactions[k];
+      }
+    });
+    const merged = Object.assign(reactions, loadedReactions);
+    this.setState({
+      reactions: merged,
+    });
+  }
+
   async onClick(name) {
-    console.log('onClick name', name);
+    const { storyId } = this.props;
+    // console.log('onClick name', name);
     if (this.state.isClicked === true) {
       return;
     }
-    const reactions = [...this.state.reactions];
-    reactions.forEach((r) => {
-      if (r.name === name) {
-        r.total++;
+    const reactions = Object.assign({}, this.state.reactions);
+    Object.keys(reactions).forEach((k) => {
+      if (k === name) {
+        reactions[k]++;
       }
     });
-    const { storyId } = this.props;
     this.setState({
       isClicked: true,
       selected: name,
@@ -45,38 +70,25 @@ export default class Reactions extends React.Component {
     // }, 500);
   }
   render() {
-    const { selected, isClicked } = this.state;
+    const { selected, isClicked, reactions } = this.state;
+    // console.log('reactions', reactions);
     let classNames = '';
     if (isClicked === true) {
       classNames = 'selected';
     }
     return (
       <ul className={classNames}>
-        <Reaction
-          isSelected={selected === 'thumbs-up'}
-          name="thumbs-up"
-          onClick={this.onClick}
-        />
-        <li>
-          <Icon name="heart" />
-          <span>3</span>
-        </li>
-        <li>
-          <Icon name="grin-hearts" />
-          <span>37</span>
-        </li>
-        <li>
-          <Icon name="flushed" />
-          <span>1</span>
-        </li>
-        <li>
-          <Icon name="sad-tear" />
-          <span>7</span>
-        </li>
-        <li>
-          <Icon name="angry" />
-          <span>42</span>
-        </li>
+        {Object.keys(reactions).map((key) => {
+          return (
+            <Reaction
+              key={key}
+              isSelected={selected === key}
+              name={key}
+              total={reactions[key]}
+              onClick={this.onClick}
+            />
+          );
+        })}
       </ul>
     );
   }
