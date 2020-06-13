@@ -16,7 +16,11 @@ const Post = ({ post = {}, whitelist } = {}) => {
   );
 };
 
-const Content = ({ content }) => {
+const Content = ({ content = 'My life in tech' } = {}) => {
+  console.log('Ookokok', content, typeof content, content.length);
+  if (content.length === 0) {
+    content = 'My life in tech';
+  }
   return <h1>{content}</h1>;
 };
 
@@ -40,7 +44,7 @@ export default ({
       <div className="container">
         <div className="row">
           <div className="col-8 offset-2 content">
-            {isStory ? (
+            {isStory && stories[0] ? (
               <Post post={stories[0]} whitelist={whitelist} />
             ) : (
               <Content content={content} />

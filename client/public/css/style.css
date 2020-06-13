@@ -20,6 +20,10 @@ h6 {
   font-weight: bold;
 }
 
+header h1 {
+  text-align: center;
+}
+
 ::selection {
   background: white;
   color: rgba(0, 0, 0, 0.9);
