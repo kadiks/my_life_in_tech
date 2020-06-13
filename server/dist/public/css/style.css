@@ -20,6 +20,10 @@ h6 {
   font-weight: bold;
 }
 
+header h1 {
+  text-align: center;
+}
+
 ::selection {
   background: white;
   color: rgba(0, 0, 0, 0.9);
@@ -141,20 +145,24 @@ header .author {
   text-align: center;
   cursor: pointer;
   opacity: 0;
+  transition: opacity 0.5s;
 }
-/* .card:hover .card-footer ul li {
+.card:hover .card-footer ul li {
   opacity: 0.7;
 }
 .card:hover .card-footer li:hover {
   opacity: 1;
 }
 .card:hover .card-footer ul.selected li {
-  opacity: 0;
+  opacity: 0.1;
+}
+.card-footer ul.selected li {
+  opacity: 0.1;
 }
 .card:hover .card-footer ul.selected li.selected,
 .card-footer ul.selected li.selected {
   opacity: 1;
-} */
+}
 .card-footer i {
   padding-left: 10px;
   padding-right: 10px;
@@ -193,6 +201,7 @@ footer .credits {
 
 footer .author {
   display: block;
+  text-align: center;
 }
 footer a {
   color: white;

@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "next",
-    "server-build": "npm run build && npm run export && rm -rf ../server/dist/public/* && cp -a out/ ../server/dist/public",
+    "build-server": "npm run build && npm run export && rm -rf ../server/dist/public/* && cp -a out/ ../server/dist/public",
     "build": "next build",
     "export": "next export",
     "start": "node app",

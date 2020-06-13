@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/index",
-    "webpack": "webpack --config webpack.config.ts"
+    "start": "node dist/app",
+    "dev": "node_modules/.bin/.nodemon",
+    "build": "node_modules/.bin/tsc --project tsconfig.json"
   },
   "keywords": [],
   "author": "",
