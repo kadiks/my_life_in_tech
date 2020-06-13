@@ -30,7 +30,7 @@ POST | GET           /stories/{storyId}/reactions
 DELETE /stories/{storyId} 
 ```
 
-### POST /stories
+### POST `/stories`
 
 #### Request body
 
