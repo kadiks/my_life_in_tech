@@ -13,7 +13,7 @@ const users = [
     projectTitle: 'Développeuse frontend',
     content:
       'Développeuse Full Stack JavaScript (vanilla, react, vue, node), Python, Java',
-    link: 'https://github.com/vico77-hub',
+    link: '',
   },
   {
     username: 'Jénaïc Cambré',
