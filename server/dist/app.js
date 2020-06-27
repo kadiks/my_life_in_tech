@@ -28,6 +28,7 @@ require("@feathersjs/transport-commons");
 const express_1 = __importDefault(require("@feathersjs/express"));
 const mongoose = require('mongoose');
 const service = require('feathers-mongoose');
+const path = require('path');
 const story_1 = __importDefault(require("./models/story"));
 const word_1 = __importDefault(require("./models/word"));
 const reaction_1 = __importDefault(require("./models/reaction"));
@@ -36,8 +37,9 @@ mongoose.Promise = global.Promise;
 const hooks_1 = __importDefault(require("./hooks"));
 const cors_1 = __importDefault(require("cors"));
 // Environment Variables Get, Check & Assign
+console.log('process.cwd()', process.cwd());
 dotenv.config();
-['PORT', 'DBUSER', 'DBPSWD', 'DBNAME', 'DBNAME_DEV'].forEach(envKey => {
+['PORT', 'DBUSER', 'DBPSWD', 'DBNAME', 'DBNAME_DEV'].forEach((envKey) => {
     if (!process.env[envKey]) {
         console.log(`No ${envKey} in .env`);
         process.exit(1);
@@ -50,7 +52,7 @@ DBNAME = NODE_ENV === 'production' ? DBNAME : DBNAME_DEV;
 const dburi = `mongodb+srv://${DBUSER}:${DBPSWD}@cluster0-ofiq6.mongodb.net/${DBNAME}?retryWrites=true&w=majority`;
 const dbConnectOptions = {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
 };
 mongoose.connect(dburi, dbConnectOptions);
 const app = express_1.default(feathers_1.default());
@@ -58,7 +60,7 @@ app.use(cors_1.default());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // STATIC FOLDER
-app.use('/', express_1.default.static('public'));
+app.use('/', express_1.default.static(path.join(process.cwd(), 'public')));
 // REST API
 app.configure(express_1.default.rest());
 // Services registration

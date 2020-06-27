@@ -5,6 +5,7 @@ import express from '@feathersjs/express';
 
 const mongoose = require('mongoose');
 const service = require('feathers-mongoose');
+const path = require('path');
 
 import StoryModel from './models/story';
 import WordModel from './models/word';
@@ -22,15 +23,14 @@ import services from './services';
 import cors from 'cors';
 
 // Environment Variables Get, Check & Assign
-
 dotenv.config();
 
-[ 'PORT', 'DBUSER', 'DBPSWD', 'DBNAME', 'DBNAME_DEV' ].forEach( envKey => {
-    if(!process.env[envKey]){
-	console.log(`No ${envKey} in .env`);
-	process.exit(1);
-    }
-})
+['PORT', 'DBUSER', 'DBPSWD', 'DBNAME', 'DBNAME_DEV'].forEach((envKey) => {
+  if (!process.env[envKey]) {
+    console.log(`No ${envKey} in .env`);
+    process.exit(1);
+  }
+});
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
 let { DBUSER, DBPSWD, DBNAME, DBNAME_DEV, NODE_ENV } = process.env;
@@ -39,15 +39,14 @@ DBNAME = NODE_ENV === 'production' ? DBNAME : DBNAME_DEV;
 
 // DB Connect
 
-const dburi = `mongodb+srv://${DBUSER}:${DBPSWD}@cluster0-ofiq6.mongodb.net/${DBNAME}?retryWrites=true&w=majority`
+const dburi = `mongodb+srv://${DBUSER}:${DBPSWD}@cluster0-ofiq6.mongodb.net/${DBNAME}?retryWrites=true&w=majority`;
 
 const dbConnectOptions = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
 
 mongoose.connect(dburi, dbConnectOptions);
-
 
 const app = express(feathers());
 
@@ -56,7 +55,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // STATIC FOLDER
-app.use('/', express.static('public'));
+app.use('/', express.static(path.join(process.cwd(), 'public')));
 
 // REST API
 app.configure(express.rest());
@@ -81,14 +80,13 @@ app.service('stories/:storyId/comments').hooks(hooks.comments);
 // Express midlleware / Neat error handler
 app.use(express.errorHandler());
 
-
 // Start the server
 
 const server = app
-.listen(PORT)
-.on('listening', () =>
+  .listen(PORT)
+  .on('listening', () =>
     console.log(`Feathers server listening on localhost:${PORT}`)
-);
+  );
 
 type ModuleId = string | number;
 
