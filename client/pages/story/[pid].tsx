@@ -109,7 +109,8 @@ class Story extends React.Component {
           <form className={`${formStyle} col-12 col-md-6 col-lg-6 `}>
             <div className={storyStyle}>
               <p className={css`text-align: right;`}>{toDate(story.date)}</p>
-              <p className={css`text-overflow: ellipsis; overflow: hidden;`}>{story.content}</p>
+              <p className={css`text-align: justify; text-overflow: ellipsis; overflow: hidden;`}>{story.content}</p>
+              {story.handle && <p className={css`text-align: right; font-style: italic;`}>{story.handle}</p>}
               <div className="card-footer">
                 <Reactions storyId={story._id} />
               </div>
@@ -136,23 +137,21 @@ const containerStyle = css`
   display: flex;
   align-items: center;
   min-height: 100%;
+  background-image: url("/img/header/header1.jpg");
+  background-size : cover;
 `;
 
 const formStyle = css`
-  background-color: rgba(99, 93, 93, 0.7);
-  border-radius: 5px;
-  padding: 10px;
-`;
-
-const reactionsBox = css`
-  position: absolute;
-  top: -2rem;
-  left: 0;
+  color: black;
+  background-color: rgba(255, 255, 255, 0.92);
+  border-radius: 0.1em;
+  padding: 1em;
+  font-weight: 400;
 `;
 
 const storyStyle = css`
   position: relative;
-  border-bottom: 1px solid black;
+  border-bottom: 0.01em solid black;
 
   .card-footer ul{
     padding-bottom: 1em;
@@ -172,10 +171,6 @@ const storyStyle = css`
       opacity: 0.1;
     }
 
-    .card-footer ul.selected li {
-      opacity: 0.1;
-    }
-
     .card-footer ul.selected li.selected{
       opacity: 1;
     }
@@ -184,10 +179,11 @@ const storyStyle = css`
 `;
 
 const commentStyle = css`
-  background-color: rgba(114, 214, 236, 0.7);
-  border-radius: 6px;
-  border-bottom: 1px solid black;
-  padding: 6px;
+  color: black;
+  font-weight: 400;
+  background-color: rgba(255, 255, 255, 0.45);
+  border-radius: 0.3em;
+  padding: 0.4em;
   width: 100%;
   min-width: 100%;
   max-width: 100%;
@@ -195,8 +191,8 @@ const commentStyle = css`
 
 const submitStyle = css`
   position: absolute;
-  bottom: 10px;
-  right: 9px;
+  bottom: 0.8em;
+  right: 0.7em;
 `;
 
 export default Story;
