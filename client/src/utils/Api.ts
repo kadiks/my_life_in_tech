@@ -26,6 +26,30 @@ const postStory = async ({ handle, isPositiveExperience, content } = {}) => {
   }
 };
 
+const postComment = async ({ storyId, comment, date } = {}) => {
+  const body = JSON.stringify({
+    storyId,
+    comment,
+    date,
+  });
+  try {
+    const res = await fetch(`${Config.API_URL}/stories/${storyId}/comments`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body,
+    });
+    const json = await res.json();
+    return json;
+  } catch (e) {
+    return {
+      error: e,
+    };
+  }
+};
+
 const getHighlightedStories = async () => {
   const url = `${Config.API_URL}/stories/highlighted`;
   //   console.log('url', url);
@@ -72,6 +96,23 @@ const getStory = async ({ id }) => {
   // console.log('#getStory id', id);
   const url = `${Config.API_URL}/stories/${id}`;
   //   console.log('url', url);
+  const res = await fetch(url);
+  const json = await res.json();
+
+  return json;
+};
+
+const getStoryComments = async ({id, limit = null, skip = null }) => {
+  const params = {
+    '$sort[date]': -1,
+  };
+  if (limit !== null) {
+    params['$limit'] = limit;
+  }
+  if (skip !== null) {
+    params['$skip'] = skip;
+  }
+  const url = `${Config.API_URL}/stories/${id}/comments?${qs.stringify(params)}`;
   const res = await fetch(url);
   const json = await res.json();
 
@@ -128,8 +169,10 @@ export {
   getStories,
   getStoryReactions,
   getStory,
+  getStoryComments,
   getWhitelists,
   getPaginatedStories,
   incrementReaction,
   postStory,
+  postComment,
 };
