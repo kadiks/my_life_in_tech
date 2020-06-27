@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Router from 'next/router';
 import { getStory, getStoryComments, postComment } from '../../src/utils/Api';
 
 import Config from '../../src/Config';
@@ -118,7 +119,7 @@ class Story extends React.Component {
 
             <div>{comments}</div>
             <div className={css`position: relative; margin-bottom: 1em; `}>
-              <textarea onChange={this.handleChange} className={commentStyle} />
+              <textarea placeholder="Commenter cette story..." onChange={this.handleChange} className={commentStyle} />
               <span onClick={this.handleSubmit}
                 className={`${submitStyle} far fa-paper-plane`}
               />
@@ -152,6 +153,7 @@ const formStyle = css`
 const storyStyle = css`
   position: relative;
   border-bottom: 0.01em solid black;
+  margin-bottom: 0.6em;
 
   .card-footer ul{
     padding-bottom: 1em;
