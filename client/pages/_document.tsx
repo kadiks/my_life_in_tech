@@ -38,6 +38,27 @@ class MyDocument extends Document {
           <link rel="stylesheet" href="/css/loader.css" />
           <link rel="stylesheet" href="/css/style.css" />
           <link rel="stylesheet" href="/css/add-xp.css" />
+
+          <meta property="og:title" content="My Life in Tech" />
+          <meta
+            property="og:description"
+            content="Témoignages de minorités dans la tech"
+          />
+          <meta
+            property="og:image"
+            content={`${Config.API_URL}/img/social_card.png`}
+          />
+          <meta property="og:url" content={Config.API_URL} />
+          <meta name="twitter:card" content="summary_large_image" />
+
+          <meta
+            property="og:site_name"
+            content="My Life in Tech - Social Hackeur"
+          />
+          <meta
+            name="twitter:image:alt"
+            content="My Life in Tech - Social Hackeur"
+          />
         </Head>
         <body>
           <Main />

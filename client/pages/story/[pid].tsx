@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { getStory, getStories } from '../../src/utils/Api';
 
 import Navigation from '../../src/components/navigation';
@@ -81,6 +82,12 @@ class Story extends React.Component {
 
     return (
       <>
+        <Head>
+          <meta
+            property="og:url"
+            content={`${Config.API_URL}/story/${story._id}`}
+          />
+        </Head>
         <Navigation />
 
         <form
