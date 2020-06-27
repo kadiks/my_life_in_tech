@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const service = require('feathers-mongoose');
 const path = require('path');
 
+import { HookContext } from '@feathersjs/feathers';
+
 import StoryModel from './models/story';
 import WordModel from './models/word';
 import ReactionModel from './models/reaction';
@@ -18,7 +20,7 @@ import NeDB from 'nedb';
 import createService from 'feathers-nedb';
 
 import hooks from './hooks';
-import services from './services';
+//import services from './services';
 
 import cors from 'cors';
 
@@ -61,9 +63,10 @@ app.use('/', express.static(path.join(process.cwd(), 'public')));
 app.configure(express.rest());
 
 // Services registration
-//   Stories
+//   Highlighted Stories
 app.use('/stories/highlighted', service({ Model: StoryModel }));
 app.service('stories/highlighted').hooks(hooks.highlighted);
+//   Stories
 app.use('/stories', service({ Model: StoryModel }));
 app.service('stories').hooks(hooks.story);
 // Whitelist
@@ -87,25 +90,3 @@ const server = app
   .on('listening', () =>
     console.log(`Feathers server listening on localhost:${PORT}`)
   );
-
-type ModuleId = string | number;
-
-interface WebpackHotModule {
-  hot?: {
-    data: any;
-    accept(
-      dependencies: string[],
-      callback?: (updatedDependencies: ModuleId[]) => void
-    ): void;
-    accept(dependency: string, callback?: () => void): void;
-    accept(errHandler?: (err: Error) => void): void;
-    dispose(callback: (data: any) => void): void;
-  };
-}
-
-declare const module: WebpackHotModule;
-
-if (module.hot) {
-  module.hot.accept();
-  module.hot.dispose(() => server.close());
-}
