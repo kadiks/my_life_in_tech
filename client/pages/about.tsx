@@ -81,7 +81,7 @@ export default ({ highlightedStories = [], whitelist = [] }) => {
                 </li>
                 <li>
                   Enfin, si vous êtes décideu.r.se dans la tech et voulez voir
-                  ce que pense les salariés.
+                  ce que pense les salarié.e.s.
                 </li>
               </ul>
             </div>
@@ -94,7 +94,9 @@ export default ({ highlightedStories = [], whitelist = [] }) => {
                 hébergé bénévolement par des développeurs web. Nous espérons que
                 son contenu vous est utile.
               </p>
-              <div className="col-6 offset-3">{renderUsersRows(UserData)}</div>
+              <div className="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+                {renderUsersRows(UserData)}
+              </div>
             </div>
           </article>
         </div>

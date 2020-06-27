@@ -33,6 +33,13 @@ header h1 {
   color: rgba(255, 255, 255, 0.8);
 }
 
+a {
+  color: white;
+}
+a:visited  {
+  color: rgba(255, 255, 255, 0.4);
+}
+
 /**
  * NAVIGATION
  */
@@ -119,6 +126,9 @@ header .content .post {
 header .author {
   text-align: right;
 }
+header .post {
+  word-break: break-all;
+}
 
 /**
  * CARD
@@ -131,6 +141,9 @@ header .author {
 .card-header time {
   color: rgba(255, 255, 255, 0.2);
   font-size: 0.8em;
+}
+.card-body p {
+  word-break: break-all;
 }
 .card-footer ul {
   padding: 0;
@@ -230,6 +243,9 @@ footer .job {
 }
 .user__row a {
   color: white;
+}
+.user__row-left {
+  text-align: center;
 }
 .user__row-img {
   width: 84px;

@@ -32,6 +32,7 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Oswald:wght@200;300;500&display=swap"
             rel="stylesheet"
           />
+          <link rel="icon" href="/favicon.ico" />
           <link rel="stylesheet" href="/css/bootstrap-grid.min.css" />
           <link rel="stylesheet" href="/css/all.min.css" />
           <link rel="stylesheet" href="/css/loader.css" />

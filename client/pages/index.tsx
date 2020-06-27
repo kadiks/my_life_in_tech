@@ -224,10 +224,16 @@ class Home extends React.Component {
   async componentDidMount() {
     const state = await getData();
     this.setState(state);
-    document.onscroll = this.onScroll;
+    document.addEventListener('scroll', this.onScroll);
+  }
+
+  componentWillUnmount() {
+    // console.log('unmount home');
+    document.removeEventListener('scroll', this.onScroll);
   }
 
   onScroll() {
+    // console.log('home#onScroll');
     const { top, height } = this.container.getBoundingClientRect();
     const limit = top + height - window.innerHeight - 300;
     if (limit < 0) {
@@ -299,7 +305,6 @@ class Home extends React.Component {
             My life in tech : partage d'expériences pour les minorités de la
             tech française
           </title>
-          <link rel="icon" href="/favicon.ico" />
         </Head>
         <Navigation />
         <Header stories={highlightedStories} whitelist={whitelist} />

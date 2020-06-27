@@ -20,7 +20,7 @@ const UserRow = ({ username, image, link, content }) => {
 
   return (
     <div className="row user__row">
-      <div className="col-2 user__row-left">
+      <div className="col-12 col-md-4 col-lg-3 user__row-left">
         <a href={link} target="_blank">
           <img
             src={renderImage(image)}
@@ -30,14 +30,16 @@ const UserRow = ({ username, image, link, content }) => {
         </a>
       </div>
 
-      <div className="col-10 user__row-right">
+      <div className="col-12 col-md-8 col-lg-9 user__row-right">
         <h4 className="user__row-title">{username}</h4>
         <p className="user__row-content">{renderContent(content)}</p>
-        <div className="user__row-link-section">
-          <a className="user__row-link" href={link} target="_blank">
-            Visiter sa page
-          </a>
-        </div>
+        {link && (
+          <div className="user__row-link-section">
+            <a className="user__row-link" href={link} target="_blank">
+              Visiter sa page
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

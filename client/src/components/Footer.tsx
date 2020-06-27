@@ -7,7 +7,7 @@ export default () => {
     <footer>
       <div className="container">
         <div className="row">
-          <div className="col-6 offset-3">
+          <div className="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
             <div className="row">
               <div className="col-12">
                 <p className="credits">
@@ -22,7 +22,7 @@ export default () => {
                 },
               ].map((user, index) => {
                 return (
-                  <div className="col" key={index}>
+                  <div className="col-6 col-md-3" key={index}>
                     <UserFooter {...user} />
                   </div>
                 );

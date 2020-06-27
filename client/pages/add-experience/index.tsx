@@ -26,8 +26,14 @@ export default () => {
   const router = useRouter();
   const [error, setError] = useState('');
   const [handle, setHandle] = useState('');
-  const [isPositiveExperience, setIsPositiveExperience] = useState(null);
+  const [isPositiveExperience, setIsPositiveExperience] = useState(true);
   const [content, setContent] = useState('');
+  const [caracteristic, setCaracteristic] = useState('');
+  const [tagLine, setTagLine] = useState(
+    `Je suis ${
+      caracteristic === '' && '<caractéristique>'
+    } et j'ai été vu(e) comme une personne quand...`
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,6 +46,10 @@ export default () => {
       );
       return;
     }
+    if (caracteristic === '') {
+      setError('Il est obligatoire de mettre votre caractéristique');
+      return;
+    }
     if (content.length <= 100) {
       setError(
         "Il est obligatoire de mettre d'écrire une expérience de plus de 100 caractères"
@@ -50,7 +60,7 @@ export default () => {
     const json = await postStory({
       handle,
       isPositiveExperience,
-      content,
+      content: tagLine + '\n' + content,
     });
 
     if (json.hasOwnProperty('_id') === true) {
@@ -93,8 +103,13 @@ export default () => {
                       value="true"
                       checked={isPositiveExperience === true}
                       onChange={(e) => {
-                        // console.log('e.target.value', e.target.value);
-                        setIsPositiveExperience(e.target.value === 'true');
+                        console.log('e.target.value', e.target.value);
+                        setIsPositiveExperience(true);
+                        setTagLine(
+                          `Je suis ${
+                            caracteristic === '' && '<caractéristique>'
+                          } et j'ai été vu(e) comme une personne quand...`
+                        );
                       }}
                     />
                     Positive
@@ -106,11 +121,49 @@ export default () => {
                       value="false"
                       checked={isPositiveExperience === false}
                       onChange={(e) => {
-                        // console.log('e.target.value', typeof e.target.value);
-                        setIsPositiveExperience(!e.target.value === 'false');
+                        console.log('e.target.value', e.target.value);
+                        setIsPositiveExperience(false);
+                        setTagLine(
+                          `Je suis ${
+                            caracteristic === '' && '<caractéristique>'
+                          } et j'ai été réduit(e) à cette caractéristique quand...`
+                        );
                       }}
                     />
                     Négative
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="caracteristic">
+                    De quelle caractéristique souhaitez-vous parler ?
+                  </label>
+                  <div className="input">
+                    Je suis{' '}
+                    <input
+                      type="text"
+                      name="caracteristic"
+                      value={caracteristic}
+                      placeholder={'Une femme, homosexuel.le, étranger.e'}
+                      onChange={(e) => {
+                        // console.log('e.target.value', e.target.value);
+                        setCaracteristic(e.target.value);
+                        setTagLine(
+                          isPositiveExperience
+                            ? `Je suis ${e.target.value} et j'ai été vu(e) comme une personne quand...`
+                            : `Je suis ${e.target.value} et j'ai été réduit(e) à cette caractéristique quand...`
+                        );
+                      }}
+                    />
+                    <small>
+                      Les{' '}
+                      <a
+                        href="https://fr.wikipedia.org/wiki/Intersectionnalit%C3%A9"
+                        target="_blank"
+                      >
+                        intersectionnalités
+                      </a>{' '}
+                      sont les bienvenues
+                    </small>
                   </div>
                 </div>
                 <div className="form-group">
@@ -122,7 +175,7 @@ export default () => {
                     name="description"
                     rows={4}
                     maxLength={600}
-                    placeholder="Mon expérience dans la tech est la suivante..."
+                    placeholder={tagLine}
                     onChange={(e) => {
                       setContent(e.target.value);
                     }}

@@ -1,9 +1,14 @@
 export default function UserFooter({ username, image, link, projectTitle }) {
   return (
     <span className="author">
-      <a href={link} target="_blank">
-        {username}
-      </a>
+      {link ? (
+        <a href={link} target="_blank">
+          {username}
+        </a>
+      ) : (
+        username
+      )}
+
       <span className="job">({projectTitle})</span>
     </span>
   );
