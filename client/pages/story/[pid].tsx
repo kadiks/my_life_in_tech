@@ -4,29 +4,14 @@ import { getStory, getStoryComments, postComment } from '../../src/utils/Api';
 
 import Config from '../../src/Config';
 import Navigation from '../../src/components/navigation';
+import Reactions from '../../src/components/story/Reactions';
 import Footer from '../../src/components/Footer';
 import { css } from 'emotion';
 
-export const toDate = (unix_timestamp) =>{
-  // Create a new JavaScript Date object based on the timestamp
-  // multiplied by 1000 so that the argument is in milliseconds, not seconds.
-  const date = new Date(unix_timestamp * 1000);
-  // Hours part from the timestamp
-  const hours = date.getHours();
-  // Minutes part from the timestamp
-  const minutes = "0" + date.getMinutes();
-  // Seconds part from the timestamp
-  const seconds = "0" + date.getSeconds();
-
-  // Will display time in 10:30:23 format
-  const formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-
-  return formattedTime;
-}
+export const toDate = (timestamp)=>(new Date(timestamp).toLocaleDateString());
 
 // TODO : factoriser dans utils
 const ErrorAlert = ({ text = '' }) => {
-  console.log('ErrorAlert text', text);
   return (
     <div className="row">
       <div className="col-12">
@@ -41,7 +26,7 @@ class Story extends React.Component {
     super(props);
 
     this.state = {
-      error: 'une erreur est survenu',
+      error: '',
       comment: {
           storyId: this.props.story._id,
           date: null,
@@ -125,10 +110,8 @@ class Story extends React.Component {
             <div className={storyStyle}>
               <p className={css`text-align: right;`}>{toDate(story.date)}</p>
               <p className={css`text-overflow: ellipsis; overflow: hidden;`}>{story.content}</p>
-              <div className={reactionsBox}>
-                <span className="fas fa-surprise" />
-                <span className="fas fa-surprise" />
-                <span className="fas fa-surprise" />
+              <div className="card-footer">
+                <Reactions storyId={story._id} />
               </div>
             </div>
 
@@ -171,10 +154,32 @@ const storyStyle = css`
   position: relative;
   border-bottom: 1px solid black;
 
-  &hover: {
-    ${reactionsBox} {
-      display: block;
+  .card-footer ul{
+    padding-bottom: 1em;
+  }
+
+  :hover{
+
+    .card-footer ul li{
+      opacity: 0.7;
     }
+
+    .card-footer li:hover{
+      opacity: 1;
+    }
+
+    .card-footer ul.selected li{
+      opacity: 0.1;
+    }
+
+    .card-footer ul.selected li {
+      opacity: 0.1;
+    }
+
+    .card-footer ul.selected li.selected{
+      opacity: 1;
+    }
+
   }
 `;
 
