@@ -60,7 +60,7 @@ export default () => {
     const json = await postStory({
       handle,
       isPositiveExperience,
-      content: tagLine + '\n' + content,
+      content,
     });
 
     if (json.hasOwnProperty('_id') === true) {
@@ -154,7 +154,7 @@ export default () => {
                         );
                       }}
                     />
-                    <small>
+                    {/* <small>
                       Les{' '}
                       <a
                         href="https://fr.wikipedia.org/wiki/Intersectionnalit%C3%A9"
@@ -163,7 +163,7 @@ export default () => {
                         intersectionnalités
                       </a>{' '}
                       sont les bienvenues
-                    </small>
+                    </small> */}
                   </div>
                 </div>
                 <div className="form-group">
