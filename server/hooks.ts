@@ -1,6 +1,40 @@
 import { HookContext } from '@feathersjs/feathers';
 
+import StoryModel from './models/story';
+import WordModel from './models/word';
+import ReactionModel from './models/reaction';
+import CommentModel from './models/comment';
+
 import * as whitelist from './whitelist.json';
+
+interface Story{
+  _id: string,
+  content: string,
+  handle?: string,
+  isPositiveExperience?: string,
+  date: number
+}
+
+interface StoryReaction{
+   _id: string,
+    reaction: string,
+    date: number,
+    storyId: string,
+    __v: number
+}
+
+interface ReactionCounts{
+    [propName: string]: number,
+}
+
+interface StoryWithReactions{
+  _id: string,
+  content: string,
+  handle?: string,
+  isPositiveExperience?: string,
+  date: number,
+  reactions: ReactionCounts | number
+}
 
 const hasContent = async (context: HookContext) => {
     const { content } = context.data;
@@ -47,8 +81,43 @@ const pick = (xs: Array<Object>) => {
     return xs[index];
 };
 
+const listIds = (res: Array<Story>) => {
+    return res.map( (x: Story) => x._id );
+}
+
+const sum = (xs: Array<number>) => xs.reduce( (x: number, y: number) => x + y, 0 );
+
 const randomStory = async (context: HookContext) => {
-    context.result = [...new Array(3)].map(() => pick(context.result));
+    /*
+      Dodgy union type member reactions of storiesWithReactions
+      TODO: we need 3 types, plain stories, stories with ReactionCounts, stories with reduced reaction counts.
+     */
+    const ids = listIds(context.result);
+    const reactionRoute = '/stories/:storyId/reactions/count';
+    const reactionService = context.app.service(reactionRoute);
+    const findParams = (storyId: string) => ({ route: { storyId } });
+    const storiesWithReactions: Array<StoryWithReactions> = await Promise.all(
+	context.result.map( async (story: Story) => ({ ...story, reactions: await reactionService.find(findParams(story._id) ) }))
+    )
+    // Replace delineated reaction counts to global sum
+    storiesWithReactions.forEach( (r: StoryWithReactions) => {
+	const reactValues: Array<number> = Object.values(r.reactions);
+	r.reactions = sum(reactValues)
+    })
+    // sort reaction by engagement (sum of all reactions)
+    // Array.sort is done in place :sob
+    storiesWithReactions.sort(function(reactionA, reactionB){
+	return Number(reactionB.reactions) - Number(reactionA.reactions);
+    })
+    context.result = storiesWithReactions;
+    if(storiesWithReactions.length < 3){
+	return context;
+    }
+    context.result = storiesWithReactions.slice(0, 4)
+    /*
+      Vestigial remain of highlights being randomly selected
+      result = [...new Array(3)].map(() => pick(result));
+     */
     return context;
 };
 
@@ -73,7 +142,6 @@ function createWhiteList(comment: any): Array<string>{
 const addWhiteList = async (context: HookContext) => {
     const story = context.result;
     story.whiteList = createWhiteList(story.content);
-    console.log(story);
 };
 
 const addWhitelists = async (context: HookContext) => {
@@ -84,18 +152,6 @@ const addWhitelists = async (context: HookContext) => {
     context.result = stories;
     return context;
 };
-
-interface StoryReaction{
-   _id: string,
-    reaction: string,
-    date: number,
-    storyId: string,
-    __v: number
-}
-
-interface ReactionCounts{
-    [propName: string]: number,
-}
 
 const mergeCount = async (context: HookContext) => {
     let result: Array<StoryReaction> = context.result
