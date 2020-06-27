@@ -8,32 +8,41 @@ import CommentModel from './models/comment';
 import * as whitelist from './whitelist.json';
 
 interface Story{
-  _id: string,
-  content: string,
-  handle?: string,
-  isPositiveExperience?: string,
-  date: number
+    _id: string,
+    content: string,
+    handle?: string,
+    isPositiveExperience?: string,
+    date: number
 }
 
 interface StoryReaction{
-   _id: string,
+    _id: string,
     reaction: string,
     date: number,
     storyId: string,
     __v: number
 }
 
-interface ReactionCounts{
+interface Reactions{
     [propName: string]: number,
 }
 
 interface StoryWithReactions{
-  _id: string,
-  content: string,
-  handle?: string,
-  isPositiveExperience?: string,
-  date: number,
-  reactions: ReactionCounts | number
+    _id: string,
+    content: string,
+    handle?: string,
+    isPositiveExperience?: string,
+    date: number,
+    reactions: Reactions
+}
+
+interface StoryWithReactionsCount{
+    _id: string,
+    content: string,
+    handle?: string,
+    isPositiveExperience?: string,
+    date: number,
+    reactionsCount: number
 }
 
 const hasContent = async (context: HookContext) => {
@@ -88,10 +97,6 @@ const listIds = (res: Array<Story>) => {
 const sum = (xs: Array<number>) => xs.reduce( (x: number, y: number) => x + y, 0 );
 
 const randomStory = async (context: HookContext) => {
-    /*
-      Dodgy union type member reactions of storiesWithReactions
-      TODO: we need 3 types, plain stories, stories with ReactionCounts, stories with reduced reaction counts.
-     */
     const ids = listIds(context.result);
     const reactionRoute = '/stories/:storyId/reactions/count';
     const reactionService = context.app.service(reactionRoute);
@@ -100,20 +105,28 @@ const randomStory = async (context: HookContext) => {
 	context.result.map( async (story: Story) => ({ ...story, reactions: await reactionService.find(findParams(story._id) ) }))
     )
     // Replace delineated reaction counts to global sum
+    const storiesWithReactionsCount: Array<StoryWithReactionsCount> = [];
     storiesWithReactions.forEach( (r: StoryWithReactions) => {
 	const reactValues: Array<number> = Object.values(r.reactions);
-	r.reactions = sum(reactValues)
+	storiesWithReactionsCount.push({
+	    _id: r._id,
+	    content: r.content,
+	    handle: r.handle,
+	    isPositiveExperience: r.isPositiveExperience,
+	    date: r.date,
+	    reactionsCount: sum(reactValues)
+	})
     })
     // sort reaction by engagement (sum of all reactions)
     // Array.sort is done in place :sob
-    storiesWithReactions.sort(function(reactionA, reactionB){
-	return Number(reactionB.reactions) - Number(reactionA.reactions);
+    storiesWithReactionsCount.sort(function(reactionA, reactionB){
+	return Number(reactionB.reactionsCount) - Number(reactionA.reactionsCount);
     })
-    context.result = storiesWithReactions;
-    if(storiesWithReactions.length < 3){
+    context.result = storiesWithReactionsCount;
+    if(storiesWithReactionsCount.length < 3){
 	return context;
     }
-    context.result = storiesWithReactions.slice(0, 4)
+    context.result = storiesWithReactionsCount.slice(0, 4)
     /*
       Vestigial remain of highlights being randomly selected
       result = [...new Array(3)].map(() => pick(result));
@@ -155,7 +168,7 @@ const addWhitelists = async (context: HookContext) => {
 
 const mergeCount = async (context: HookContext) => {
     let result: Array<StoryReaction> = context.result
-    let counts: ReactionCounts = {}
+    let counts: Reactions = {}
     result.forEach( (item: StoryReaction) => {
         if(item.reaction in counts){
             counts[item.reaction]++;
