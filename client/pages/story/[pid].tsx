@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { getStory, getStories } from '../../src/utils/Api';
 
+import Config from '../../src/Config';
 import Navigation from '../../src/components/navigation';
 import Header from '../../src/components/Header';
 import Footer from '../../src/components/Footer';
