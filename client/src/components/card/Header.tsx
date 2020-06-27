@@ -7,7 +7,7 @@ export default ({ _id, handle, date }) => {
   const dateStr = `${dateObj.getDate()}/${dateMonth}`;
   return (
     <div className="card-header">
-      <Link href={`/story/${_id}`}>
+      <Link href="/story/[pid]" as={`/story/${_id}`}>
         <h3>{handle === '' ? 'Anonyme' : handle}</h3>
       </Link>
       <time dateTime={date}>{dateStr}</time>

@@ -9,7 +9,7 @@ export default ({ _id, content, whitelist }) => {
   return (
     <div className="card-body">
       {/* <p>{updatedContent}</p> */}
-      <Link href={`/story/${_id}`}>
+      <Link href="/story/[pid]" as={`/story/${_id}`}>
         <p dangerouslySetInnerHTML={updatedContent} />
       </Link>
     </div>
