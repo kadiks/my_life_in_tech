@@ -42,6 +42,7 @@ interface StoryWithReactionsCount{
     handle?: string,
     isPositiveExperience?: string,
     date: number,
+    reactions: Reactions,
     reactionsCount: number
 }
 
@@ -85,18 +86,15 @@ const filterHandle = async (context: HookContext) => {
     return context;
 };
 
-const pick = (xs: Array<Object>) => {
-    const index = Math.floor(Math.random() * xs.length);
-    return xs[index];
-};
-
 const listIds = (res: Array<Story>) => {
     return res.map( (x: Story) => x._id );
 }
 
-const sum = (xs: Array<number>) => xs.reduce( (x: number, y: number) => x + y, 0 );
+const sum = (xs: Array<number>) => {
+    return xs.reduce( (x: number, y: number) => x + y, 0 );
+}
 
-const randomStory = async (context: HookContext) => {
+const findHighlightedStories = async (context: HookContext) => {
     const ids = listIds(context.result);
     const reactionRoute = '/stories/:storyId/reactions/count';
     const reactionService = context.app.service(reactionRoute);
@@ -114,11 +112,10 @@ const randomStory = async (context: HookContext) => {
 	    handle: r.handle,
 	    isPositiveExperience: r.isPositiveExperience,
 	    date: r.date,
+	    reactions: r.reactions,
 	    reactionsCount: sum(reactValues)
 	})
     })
-    // sort reaction by engagement (sum of all reactions)
-    // Array.sort is done in place :sob
     storiesWithReactionsCount.sort(function(reactionA, reactionB){
 	return Number(reactionB.reactionsCount) - Number(reactionA.reactionsCount);
     })
@@ -127,10 +124,6 @@ const randomStory = async (context: HookContext) => {
 	return context;
     }
     context.result = storiesWithReactionsCount.slice(0, 4)
-    /*
-      Vestigial remain of highlights being randomly selected
-      result = [...new Array(3)].map(() => pick(result));
-     */
     return context;
 };
 
@@ -200,7 +193,7 @@ const storyHook = {
 
 const highlightHook = {
     after: {
-        find: [randomStory],
+        find: [findHighlightedStories],
     },
     error: {
         all: [error],
