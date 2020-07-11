@@ -109,16 +109,17 @@ function reactionAdder(context: HookContext){
     }
 }
 
+
 const addReactions = async (context: HookContext) => {
     const stories = context.result;
     const addReactionsToStory = reactionAdder(context)
-    // Add reactions to stories
     let storiesWithReactions: StoriesWithReactions = await Promise.all(
 	context.result.map( addReactionsToStory )
     )
     context.result = storiesWithReactions;
     return context;
 };
+
 
 const addReactionsToStory = async (context: HookContext) => {
     const story = context.result;
@@ -143,9 +144,6 @@ function addReactionCount( storyWithReactions: StoryWithReactions ){
 
 const findHighlightedStories = async (context: HookContext) => {
     const ids = listIds(context.result);
-    const reactionRoute = '/stories/:storyId/reactions/count';
-    const reactionService = context.app.service(reactionRoute);
-    const findParams = (storyId: string) => ({ route: { storyId } });
     const addReactionsToStory = reactionAdder(context)
     // Add reactions to stories
     const storiesWithReactions: Array<StoryWithReactions> = await Promise.all(
