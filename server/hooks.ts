@@ -152,7 +152,9 @@ const findHighlightedStories = async (context: HookContext) => {
     // Add a count of all reactions per story
     const storiesWithReactionsCount = storiesWithReactions.map( addReactionCount )
     storiesWithReactionsCount.sort(function(reactionA, reactionB){
-	return Number(reactionB.reactionsCount) - Number(reactionA.reactionsCount);
+	const countA = Number(reactionA.reactionsCount)
+	const countB = Number(reactionB.reactionsCount)
+	return countB - countA;
     })
     context.result = storiesWithReactionsCount;
     if(storiesWithReactionsCount.length < 3){
