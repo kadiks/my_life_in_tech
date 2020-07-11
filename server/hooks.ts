@@ -42,8 +42,11 @@ interface StoryWithReactionsCount{
     handle?: string,
     isPositiveExperience?: string,
     date: number,
+    reactions: Reactions,
     reactionsCount: number
 }
+
+type StoriesWithReactions = Array<StoryWithReactions>;
 
 const hasContent = async (context: HookContext) => {
     const { content } = context.data;
@@ -85,52 +88,79 @@ const filterHandle = async (context: HookContext) => {
     return context;
 };
 
-const pick = (xs: Array<Object>) => {
-    const index = Math.floor(Math.random() * xs.length);
-    return xs[index];
-};
-
 const listIds = (res: Array<Story>) => {
     return res.map( (x: Story) => x._id );
 }
 
-const sum = (xs: Array<number>) => xs.reduce( (x: number, y: number) => x + y, 0 );
+const sum = (xs: Array<number>) => {
+    return xs.reduce( (x: number, y: number) => x + y, 0 );
+}
 
-const randomStory = async (context: HookContext) => {
-    const ids = listIds(context.result);
-    const reactionRoute = '/stories/:storyId/reactions/count';
-    const reactionService = context.app.service(reactionRoute);
-    const findParams = (storyId: string) => ({ route: { storyId } });
-    const storiesWithReactions: Array<StoryWithReactions> = await Promise.all(
-	context.result.map( async (story: Story) => ({ ...story, reactions: await reactionService.find(findParams(story._id) ) }))
+function reactionAdder(context: HookContext){
+    return async function(story: Story){
+	const reactionRoute = '/stories/:storyId/reactions/count';
+	const reactionService = context.app.service(reactionRoute);
+	const findParams = (storyId: string) => ({ route: { storyId } });
+	const reactions = await reactionService.find(findParams(story._id))
+	return {
+	    ...story,
+	    reactions
+	};
+    }
+}
+
+
+const addReactions = async (context: HookContext) => {
+    const stories = context.result;
+    const addReactionsToStory = reactionAdder(context)
+    let storiesWithReactions: StoriesWithReactions = await Promise.all(
+	context.result.map( addReactionsToStory )
     )
-    // Replace delineated reaction counts to global sum
-    const storiesWithReactionsCount: Array<StoryWithReactionsCount> = [];
-    storiesWithReactions.forEach( (r: StoryWithReactions) => {
-	const reactValues: Array<number> = Object.values(r.reactions);
-	storiesWithReactionsCount.push({
-	    _id: r._id,
-	    content: r.content,
-	    handle: r.handle,
-	    isPositiveExperience: r.isPositiveExperience,
-	    date: r.date,
-	    reactionsCount: sum(reactValues)
-	})
-    })
-    // sort reaction by engagement (sum of all reactions)
-    // Array.sort is done in place :sob
+    context.result = storiesWithReactions;
+    return context;
+};
+
+
+const addReactionsToStory = async (context: HookContext) => {
+    const story = context.result;
+    context.result = await reactionAdder(context)(story);
+    return context;
+};
+
+function addReactionCount( storyWithReactions: StoryWithReactions ){
+    const reactions = storyWithReactions.reactions;
+    const reactValues: Array<number> = Object.values(reactions);
+    const reactionsCount = sum(reactValues);
+    return {
+	_id: storyWithReactions._id,
+	content: storyWithReactions.content,
+	handle: storyWithReactions.handle,
+	isPositiveExperience: storyWithReactions.isPositiveExperience,
+	date: storyWithReactions.date,
+	reactions: storyWithReactions.reactions,
+	reactionsCount
+    }
+}
+
+const findHighlightedStories = async (context: HookContext) => {
+    const ids = listIds(context.result);
+    const addReactionsToStory = reactionAdder(context)
+    // Add reactions to stories
+    const storiesWithReactions: Array<StoryWithReactions> = await Promise.all(
+	context.result.map( addReactionsToStory )
+    )
+    // Add a count of all reactions per story
+    const storiesWithReactionsCount = storiesWithReactions.map( addReactionCount )
     storiesWithReactionsCount.sort(function(reactionA, reactionB){
-	return Number(reactionB.reactionsCount) - Number(reactionA.reactionsCount);
+	const countA = Number(reactionA.reactionsCount)
+	const countB = Number(reactionB.reactionsCount)
+	return countB - countA;
     })
     context.result = storiesWithReactionsCount;
     if(storiesWithReactionsCount.length < 3){
 	return context;
     }
     context.result = storiesWithReactionsCount.slice(0, 4)
-    /*
-      Vestigial remain of highlights being randomly selected
-      result = [...new Array(3)].map(() => pick(result));
-     */
     return context;
 };
 
@@ -180,18 +210,13 @@ const mergeCount = async (context: HookContext) => {
     return context;
 };
 
-
-const addReactions = async (context: HookContext) => {
-    return context;
-};
-
 const storyHook = {
     before: {
         create: [hasContent, createdAt, filterHandle],
     },
     after: {
         // One story
-        get: [addWhiteList, addReactions],
+        get: [addWhiteList, addReactionsToStory],
         // All stories
         find: [addWhitelists, addReactions],
     },
@@ -200,7 +225,7 @@ const storyHook = {
 
 const highlightHook = {
     after: {
-        find: [randomStory],
+        find: [findHighlightedStories],
     },
     error: {
         all: [error],

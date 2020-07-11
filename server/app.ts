@@ -69,6 +69,12 @@ app.service('stories/highlighted').hooks(hooks.highlighted);
 //   Stories
 app.use('/stories', service({ Model: StoryModel }));
 app.service('stories').hooks(hooks.story);
+
+/*
+app.use('/stories/:storyId', service({ Model: StoryModel }));
+app.service('stories/:storyId').hooks(hooks.story);
+*/
+
 // Whitelist
 app.use('/whitelist', service({ Model: WordModel }));
 // Reaction Count
