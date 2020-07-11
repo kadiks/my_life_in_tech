@@ -113,10 +113,16 @@ const addReactions = async (context: HookContext) => {
     const stories = context.result;
     const addReactionsToStory = reactionAdder(context)
     // Add reactions to stories
-    const storiesWithReactions: Array<StoryWithReactions> = await Promise.all(
+    let storiesWithReactions: Array<StoryWithReactions> = await Promise.all(
 	context.result.map( addReactionsToStory )
     )
     context.result = storiesWithReactions;
+    return context;
+};
+
+const addReactionsToStory = async (context: HookContext) => {
+    const story = context.result;
+    context.result = await reactionAdder(context)(story);
     return context;
 };
 
@@ -210,7 +216,7 @@ const storyHook = {
     },
     after: {
         // One story
-        get: [addWhiteList, addReactions],
+        get: [addWhiteList, addReactionsToStory],
         // All stories
         find: [addWhitelists, addReactions],
     },
