@@ -46,6 +46,8 @@ interface StoryWithReactionsCount{
     reactionsCount: number
 }
 
+type StoriesWithReactions = Array<StoryWithReactions>;
+
 const hasContent = async (context: HookContext) => {
     const { content } = context.data;
     if(!content){
@@ -94,28 +96,45 @@ const sum = (xs: Array<number>) => {
     return xs.reduce( (x: number, y: number) => x + y, 0 );
 }
 
+function reactionAdder(context: HookContext){
+    return async function(story: Story){
+	const reactionRoute = '/stories/:storyId/reactions/count';
+	const reactionService = context.app.service(reactionRoute);
+	const findParams = (storyId: string) => ({ route: { storyId } });
+	const reactions = await reactionService.find(findParams(story._id))
+	return {
+	    ...story,
+	    reactions
+	};
+    }
+}
+
+function addReactionCount( storyWithReactions: StoryWithReactions ){
+    const reactions = storyWithReactions.reactions;
+    const reactValues: Array<number> = Object.values(reactions);
+    const reactionsCount = sum(reactValues);
+    return {
+	_id: storyWithReactions._id,
+	content: storyWithReactions.content,
+	handle: storyWithReactions.handle,
+	isPositiveExperience: storyWithReactions.isPositiveExperience,
+	date: storyWithReactions.date,
+	reactions: storyWithReactions.reactions,
+	reactionsCount
+    }
+}
+
 const findHighlightedStories = async (context: HookContext) => {
     const ids = listIds(context.result);
     const reactionRoute = '/stories/:storyId/reactions/count';
     const reactionService = context.app.service(reactionRoute);
     const findParams = (storyId: string) => ({ route: { storyId } });
+    const addReactionsToStory = reactionAdder(context)
     const storiesWithReactions: Array<StoryWithReactions> = await Promise.all(
-	context.result.map( async (story: Story) => ({ ...story, reactions: await reactionService.find(findParams(story._id) ) }))
+	context.result.map( addReactionsToStory )
     )
-    // Replace delineated reaction counts to global sum
-    const storiesWithReactionsCount: Array<StoryWithReactionsCount> = [];
-    storiesWithReactions.forEach( (r: StoryWithReactions) => {
-	const reactValues: Array<number> = Object.values(r.reactions);
-	storiesWithReactionsCount.push({
-	    _id: r._id,
-	    content: r.content,
-	    handle: r.handle,
-	    isPositiveExperience: r.isPositiveExperience,
-	    date: r.date,
-	    reactions: r.reactions,
-	    reactionsCount: sum(reactValues)
-	})
-    })
+    // Add a count of all reactions per story
+    const storiesWithReactionsCount = storiesWithReactions.map( addReactionCount )
     storiesWithReactionsCount.sort(function(reactionA, reactionB){
 	return Number(reactionB.reactionsCount) - Number(reactionA.reactionsCount);
     })
