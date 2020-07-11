@@ -113,7 +113,7 @@ const addReactions = async (context: HookContext) => {
     const stories = context.result;
     const addReactionsToStory = reactionAdder(context)
     // Add reactions to stories
-    let storiesWithReactions: Array<StoryWithReactions> = await Promise.all(
+    let storiesWithReactions: StoriesWithReactions = await Promise.all(
 	context.result.map( addReactionsToStory )
     )
     context.result = storiesWithReactions;
