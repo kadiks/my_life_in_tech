@@ -25,13 +25,13 @@
     "helmet": "^3.22.0",
     "mongoose": "^5.9.18",
     "nedb": "^1.8.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
     "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4",
-    "ts-loader": "^7.0.5",
+    "ts-loader": "^9.4.2",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   }
